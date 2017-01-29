@@ -1,6 +1,5 @@
 package me.nikl.calendarevents;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -9,12 +8,12 @@ import java.io.*;
 import java.util.logging.Level;
 
 /**
- * Created by niklas on 1/24/17.
- *
+ * Main class
  */
 public class Main extends JavaPlugin{
+	private Timer timer;
 	private EventsManager eventsManager;
-	public static boolean debug = true;
+	static boolean debug = false;
 	
 	private File sta, con;
 	private FileConfiguration stats, config;
@@ -23,25 +22,21 @@ public class Main extends JavaPlugin{
 	@Override
 	public void onEnable(){
 		reload();
-		eventsManager = new EventsManager(this);
+		this.eventsManager = new EventsManager(this);
+		this.timer = new Timer(this);
 		
-		Bukkit.getServer().getPluginManager().registerEvents(new EventListener(), this);
-		
-		// testing
-		new Timing();
 	}
 	
 	@Override
 	public void onDisable(){
-		
-		
+		this.timer.cancel();
 	}
 	
 	
 	
-	public void reload() {
+	private void reload() {
 		if(this.con == null)this.con = new File(this.getDataFolder().toString() + File.separatorChar + "config.yml");
-		if(this.sta == null)this.sta = new File(this.getDataFolder().toString() + File.separatorChar + "stats.yml");
+		if(this.sta == null)this.sta = new File(this.getDataFolder().toString() + File.separatorChar + "data.yml");
 		if (!con.exists()) {
 			this.saveResource("config.yml", false);
 		}
@@ -87,7 +82,11 @@ public class Main extends JavaPlugin{
 	
 	
 	
-	public EventsManager getEventsManager(){
+	EventsManager getEventsManager(){
 		return this.eventsManager;
+	}
+	
+	void getNewTimer() {
+		this.timer = new Timer(this);
 	}
 }
