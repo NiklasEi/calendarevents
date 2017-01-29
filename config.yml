@@ -1,0 +1,64 @@
+# ----------------------------------------------------------------------------#
+#                                                                             #
+#                          Calender Events config                             #
+#                                                                             #
+# ----------------------------------------------------------------------------#
+
+# the following events are for you to understand the way you can produce custom events with this plugin
+#   they all get called. You can remove or add any number of events you want. Just make sure that the labels are different.
+# to let the plugin do stuff on these events please use the section 'listener'
+# if you want to write your own listener, use this plugin as a dependency and listen for 'me.nikl.calendarevents.CalendarEvent'
+#   use event.getLabels() to get a list of the labels of the called event
+events:
+  # event called on the first of every month
+  #   as an example: for this event you would check: event.contains("newMonth")
+  newMonth:
+    timing:
+      # this will get called on every first of the month
+      #   you can add more dates to the '01' just put a ',' inbetween
+      occasion: "01"
+      time: "00:00"
+  # event called on the first of every week
+  newWeek:
+    timing:
+      occasion: "monday"
+      time: "00:00"
+  # event called on the first and seventh of every year
+  newYearAndSeventh:
+    timing:
+      # date without a year gets called every year
+      occasion: "01.01, 07.01"
+      time: "00:00"
+  exampleEvent1:
+    timing:
+      # 'every day' basically gets translated to 'monday, tuesday, wednesday, thursday, friday, saturday, sunday'
+      occasion: "every day"
+      time: "03:00,05:00,07:00,09:00,11:00,13:00,15:00,17:00,19:00,21:00,23:00,01:00"
+  workingDays:
+    timing:
+      occasion: "monday, tuesday, wednesday, thursday, friday"
+      time: "03:00,05:00,07:00,09:00,11:00,13:00,15:00,17:00,19:00,21:00,23:00,01:00"
+  # event fired on christmas 2022
+  #   for events that get only fired once on a specific date, give the date as dd.mm.yyyy
+  christmas2022:
+    timing:
+      occasion: "24.12.2022"
+      time: "12:00"
+  everyChristmas:
+    timing:
+      occasion: "24.12"
+      time: "00:00"
+
+# you can listen to CalendarEvent in other plugins. But you can also use the listener included in this plugin
+#   to send commands, messages, broadcasts, titles
+# use & for colors
+# %allOnline%    --->  this gets called for every online player once and it will be replaced with the players names
+listener:
+  workingDays:
+    commands:
+    - "tell %allOnline% &4Hey there &1:)"
+    broadcast: "&1Hello everyone"
+    broadcastWithPerm:
+      perm: "example.perm"
+      broadcast: "Hey man, you got a special permission!"
+
