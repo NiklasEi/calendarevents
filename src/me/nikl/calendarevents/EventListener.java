@@ -1,5 +1,6 @@
 package me.nikl.calendarevents;
 
+import me.nikl.calendarevents.nms.NMSUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -21,18 +22,25 @@ import java.util.logging.Level;
  */
 class EventListener implements Listener {
 	private Main plugin;
+	private NMSUtil nms;
 	private Map<String, ArrayList<String>> commands ;
 	private Map<String, String> broadcast ;
 	private Map<String, BroadcastWithPerm> broadCastWithPerm;
+	private Map<String, ActionBar> actionBars;
+	private Map<String, Title> titles;
 	
 	private Set<String> labels;
 	
 	
 	EventListener(Main plugin, Set<String> labels){
 		this.plugin = plugin;
+		this.nms = plugin.getNms();
+		if(nms == null) Bukkit.getLogger().log(Level.WARNING, "Your version is not (jet) supported to send Titles or actionbars!");
 		this.commands = new HashMap<>();
 		this.broadcast = new HashMap<>();
 		this.broadCastWithPerm = new HashMap<>();
+		this.actionBars = new HashMap<>();
+		this.titles = new HashMap<>();
 		
 		this.labels =labels;
 		
@@ -68,11 +76,15 @@ class EventListener implements Listener {
 				broadCastWithPerm.put(label, new BroadcastWithPerm(listener.getString(label + ".broadcastWithPerm" + ".perm"), ChatColor.translateAlternateColorCodes('&',listener.getString(label + ".broadcastWithPerm" + ".broadcast"))));
 			}
 			
+			if(listener.isConfigurationSection(label + ".actionbar") && listener.isString(label + ".actionbar" + ".bar")) {
+				actionBars.put(label, new ActionBar(listener.getString(label + ".actionbar" + ".perm"), ChatColor.translateAlternateColorCodes('&',listener.getString(label + ".actionbar" + ".bar"))));
+			}
 			
-			
+			if(listener.isConfigurationSection(label + ".title") && listener.isString(label + ".title" + ".title") && listener.isString(label + ".title" + ".subTitle")) {
+				titles.put(label, new Title(listener.getString(label + ".title" + ".perm"), ChatColor.translateAlternateColorCodes('&',listener.getString(label + ".title" + ".title")), ChatColor.translateAlternateColorCodes('&',listener.getString(label + ".title" + ".subTitle"))));
+			}
 			
 		}
-		
 	}
 	
 	
@@ -87,9 +99,10 @@ class EventListener implements Listener {
 		for(String label : event.getLabels()){
 			if(commands.get(label) != null && !commands.get(label).isEmpty()){
 				for(String cmd:commands.get(label)){
+					cmd =  cmd.replaceAll("%time%", event.getTime());
 					if(cmd.contains("%allOnline%")){
 						for(Player player : Bukkit.getOnlinePlayers()){
-							Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceAll("%allOnline%", player.getName()));
+							Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceAll("%allOnline%", player.getName()).replaceAll("%player%", player.getName()));
 						}
 					} else {
 						Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
@@ -98,12 +111,43 @@ class EventListener implements Listener {
 			}
 			
 			if(broadcast.get(label) != null){
-				Bukkit.broadcastMessage(broadcast.get(label));
+				Bukkit.broadcastMessage(broadcast.get(label).replaceAll("%time%", event.getTime()));
 			}
 			
 			if(broadCastWithPerm.get(label) != null){
 				BroadcastWithPerm broadcastWithPerm = this.broadCastWithPerm.get(label);
-				Bukkit.broadcast(broadcastWithPerm.message, broadcastWithPerm.perm);
+				Bukkit.broadcast(broadcastWithPerm.message.replaceAll("%time%", event.getTime()), broadcastWithPerm.perm);
+			}
+			
+			if(actionBars.get(label) != null && this.nms != null){
+				ActionBar actionBar = this.actionBars.get(label);
+				String bar = actionBar.bar.replaceAll("%time%", event.getTime());
+				if(actionBar.perm == null || actionBar.perm.equals("")){
+					for(Player player : Bukkit.getOnlinePlayers()){
+						nms.sendActionbar(player, bar.replaceAll("%player%", player.getName()));
+					}
+				} else {
+					for(Player player : Bukkit.getOnlinePlayers()){
+						if(!player.hasPermission(actionBar.perm)) continue;
+						nms.sendActionbar(player, bar.replaceAll("%player%", player.getName()));
+					}
+				}
+			}
+			
+			if(titles.get(label) != null && this.nms != null){
+				Title title = this.titles.get(label);
+				String titleString = title.title.replaceAll("%time%", event.getTime());
+				String subTitle = title.subTitle.replaceAll("%time%", event.getTime());
+				if(title.perm == null || title.perm.equals("")){
+					for(Player player : Bukkit.getOnlinePlayers()){
+						nms.sendTitle(player, titleString.replaceAll("%player%", player.getName()), subTitle.replaceAll("%player%", player.getName()));
+					}
+				} else {
+					for(Player player : Bukkit.getOnlinePlayers()){
+						if(!player.hasPermission(title.perm)) continue;
+						nms.sendTitle(player, titleString.replaceAll("%player%", player.getName()), subTitle.replaceAll("%player%", player.getName()));
+					}
+				}
 			}
 		}
 	}
@@ -114,6 +158,23 @@ class EventListener implements Listener {
 		private BroadcastWithPerm(String perm, String message) {
 			this.perm=perm;
 			this.message=message;
+		}
+	}
+	
+	private class ActionBar {
+		String perm, bar;
+		private ActionBar(String perm, String bar) {
+			this.perm=perm;
+			this.bar=bar;
+		}
+	}
+	
+	private class Title {
+		String perm, title, subTitle;
+		private Title(String perm, String title, String subTitle) {
+			this.perm=perm;
+			this.title=title;
+			this.subTitle = subTitle;
 		}
 	}
 }
