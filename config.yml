@@ -61,4 +61,15 @@ listener:
     broadcastWithPerm:
       perm: "example.perm"
       broadcast: "Hey man, you got a special permission!"
+    actionbar:
+      # perm is optional. If not set, the actionbar will be send to everyone
+      perm: "calendar.actionbar"
+      bar: "&1That's a cool actionbar, man"
+    title:
+      # perm is optional. If not set, the title will be send to everyone
+      perm: "calendar.title"
+      title: "&1That's the title"
+      subTitle: "With a &4subtitle"
+  newYearAndSeventh:
+    broadcast: "Yay it's new year!!   Or wait... is it already the 7th?"
 
