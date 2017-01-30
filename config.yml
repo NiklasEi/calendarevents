@@ -52,24 +52,33 @@ events:
 # you can listen to CalendarEvent in other plugins. But you can also use the listener included in this plugin
 #   to send commands, messages, broadcasts, titles
 # use & for colors
-# %allOnline%    --->  this gets called for every online player once and it will be replaced with the players names
+# %time% will be replaced with the events time (24h format hh:mm)
 listener:
   workingDays:
+
+    # %allOnline%    --->  this gets called for every online player once and it will be replaced with the players names
     commands:
-    - "tell %allOnline% &4Hey there &1:)"
-    broadcast: "&1Hello everyone"
+    - "tell %allOnline% &4Hey there %allOnline% &1:)"
+
+    broadcast: "&1Hello everyone. It is now %time%"
+
     broadcastWithPerm:
       perm: "example.perm"
       broadcast: "Hey man, you got a special permission!"
+
+    # %player% will be replaced with the players name
     actionbar:
-      # perm is optional. If not set, the actionbar will be send to everyone
-      perm: "calendar.actionbar"
-      bar: "&1That's a cool actionbar, man"
+      # perm is optional. If empty, the actionbar will be send to everyone
+      perm: ""
+      bar: "&1That's a cool actionbar, %player% &r(btw: it's %time%)"
+
+    # %player% will be replaced with the players name
     title:
-      # perm is optional. If not set, the title will be send to everyone
-      perm: "calendar.title"
-      title: "&1That's the title"
-      subTitle: "With a &4subtitle"
+      # perm is optional. If empty, the title will be send to everyone
+      perm: ""
+      title: "&1That's the title (%time%)"
+      subTitle: "With a &4subtitle %player%"
+
   newYearAndSeventh:
     broadcast: "Yay it's new year!!   Or wait... is it already the 7th?"
 
