@@ -33,7 +33,7 @@ public class NMSUtil_1_11_R1 implements NMSUtil{
 			((CraftPlayer) player).getHandle().playerConnection.sendPacket(pSubTitle);
 			
 		}
-		PacketPlayOutTitle length = new PacketPlayOutTitle(5, 20, 5);
+		PacketPlayOutTitle length = new PacketPlayOutTitle(10, 60, 10);
 		((CraftPlayer) player).getHandle().playerConnection.sendPacket(length);
 	}
 	
