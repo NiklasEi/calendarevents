@@ -2,7 +2,6 @@ package me.nikl.calendarevents;
 
 import me.nikl.calendarevents.nms.*;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,6 +20,8 @@ public class Main extends JavaPlugin{
 	
 	private File sta, con;
 	private FileConfiguration stats, config;
+
+	private APICalendarEvents api;
 	
 	
 	@Override
@@ -29,14 +30,14 @@ public class Main extends JavaPlugin{
 		setUpNMS();
 		this.eventsManager = new EventsManager(this);
 		this.timer = new Timer(this);
+
+		this.api = new APICalendarEvents(eventsManager);
 	}
 	
 	@Override
 	public void onDisable(){
 		this.timer.cancel();
 	}
-	
-	
 	
 	private void reload() {
 		if(this.con == null)this.con = new File(this.getDataFolder().toString() + File.separatorChar + "config.yml");
@@ -138,5 +139,9 @@ public class Main extends JavaPlugin{
 	
 	void getNewTimer() {
 		this.timer = new Timer(this);
+	}
+
+	public APICalendarEvents getApi(){
+		return this.api;
 	}
 }
