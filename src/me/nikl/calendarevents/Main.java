@@ -141,6 +141,11 @@ public class Main extends JavaPlugin{
 		this.timer = new Timer(this);
 	}
 
+	/**
+	 * Get the API instance to manipulate Events on runtime.
+	 *
+	 * @return API instance
+	 */
 	public APICalendarEvents getApi(){
 		return this.api;
 	}
