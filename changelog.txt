@@ -1,0 +1,7 @@
+v 1.1.0:
+- added api to add events on runtime
+- checking for existing events with same label (no overriding)
+- event with only past timings will be removed
+- recalculate timings of event if there are no next timings (should fix problems arising when plugin was running for a few weeks)
+- calculating of next millis to call is more efficient
+- removed unused data file
