@@ -53,8 +53,15 @@ class EventsManager {
 				if(Main.debug) Bukkit.getConsoleSender().sendMessage("***********************************************************************************");
 				continue events;
 			}
+
+			if(timings.containsKey(key)){
+				Bukkit.getLogger().log(Level.WARNING, "There is already an event with the label '" + key + "'");
+				Bukkit.getLogger().log(Level.WARNING, "...  Skipping the event  ...");
+				if(Main.debug) Bukkit.getConsoleSender().sendMessage("***********************************************************************************");
+				continue events;
+			}
 			
-			Timing timing = new Timing();
+			Timing timing = new Timing(key, this);
 			
 			
 			/*
@@ -78,7 +85,13 @@ class EventsManager {
 			if(Main.debug) Bukkit.getConsoleSender().sendMessage("Listing loaded dates and times from: " + key);
 			timing.setUp();
 			if(Main.debug) Bukkit.getConsoleSender().sendMessage("***********************************************************************************");
+
+		    /*
+		    important: keep setNextMilli behind adding to the Map
+		    since setNextMilli can remove it again if all dates are in the past
+		     */
 			timings.put(key, timing);
+			timing.setNextMilli();
 		}
 	}
 
@@ -283,9 +296,11 @@ class EventsManager {
 		for(String label : timings.keySet()){
 			Timing timing = timings.get(label);
 			if(((timing.getNextCall() - currentMillis)/1000 )< 60){
+				if(toCall.isEmpty()) {
+					milli = timing.getNextCall();
+					diff = (milli - currentMillis) / 1000;
+				}
 				toCall.add(label);
-				milli = timing.getNextCall();
-				diff = (milli - currentMillis)/1000;
 			}
 		}
 		if(!toCall.isEmpty()){
@@ -319,7 +334,7 @@ class EventsManager {
 			return false;
 		}
 
-		Timing timing = new Timing();
+		Timing timing = new Timing(label, this);
 
 
 		if(!loadOccasion(timing, label, occasions)){
@@ -333,7 +348,18 @@ class EventsManager {
 		if(Main.debug) Bukkit.getConsoleSender().sendMessage("Listing loaded dates and times from: " + label);
 		timing.setUp();
 		if(Main.debug) Bukkit.getConsoleSender().sendMessage("***********************************************************************************");
+
+		/*
+		important: keep setNextMilli behind adding to the Map
+		since setNextMilli can remove it again if all dates are in the past
+		 */
 		this.timings.put(label, timing);
+		timing.setNextMilli();
+
 		return true;
+	}
+
+	void removeEvent(String label){
+		this.timings.remove(label);
 	}
 }
