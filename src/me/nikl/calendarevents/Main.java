@@ -7,7 +7,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
-import java.util.logging.Level;
 
 /**
  * Main class
@@ -18,8 +17,8 @@ public class Main extends JavaPlugin{
 	private EventsManager eventsManager;
 	static boolean debug = false;
 	
-	private File sta, con;
-	private FileConfiguration stats, config;
+	private File con;
+	private FileConfiguration config;
 
 	private APICalendarEvents api;
 	
@@ -41,16 +40,8 @@ public class Main extends JavaPlugin{
 	
 	private void reload() {
 		if(this.con == null)this.con = new File(this.getDataFolder().toString() + File.separatorChar + "config.yml");
-		if(this.sta == null)this.sta = new File(this.getDataFolder().toString() + File.separatorChar + "data.yml");
 		if (!con.exists()) {
 			this.saveResource("config.yml", false);
-		}
-		if (!sta.exists()) {
-			try {
-				sta.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 		}
 		
 		// reload configuration
@@ -65,22 +56,6 @@ public class Main extends JavaPlugin{
 			@SuppressWarnings("deprecation")
 			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
 			this.config.setDefaults(defConfig);
-		}
-		
-		// if this method was not called from onEnable stats is not null and has to be saved to the file first!
-		if (stats != null) {
-			try {
-				this.stats.save(sta);
-			} catch (IOException e) {
-				getLogger().log(Level.SEVERE, "Could not save statistics", e);
-			}
-		}
-		
-		// load data file
-		try {
-			this.stats = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(this.sta), "UTF-8"));
-		} catch (UnsupportedEncodingException | FileNotFoundException e) {
-			e.printStackTrace();
 		}
 	}
 	
