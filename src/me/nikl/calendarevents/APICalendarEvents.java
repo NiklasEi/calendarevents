@@ -28,4 +28,13 @@ public class APICalendarEvents {
     public boolean addEvent(String label, String occasions, String timings){
         return eventsManager.addEvent(label, occasions, timings);
     }
+
+    /**
+     * Remove the event with the given label.
+     *
+     * @param label label of the event to remove
+     */
+    public void removeEvent(String label){
+        eventsManager.removeEvent(label);
+    }
 }
