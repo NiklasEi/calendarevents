@@ -1,12 +1,14 @@
 package me.nikl.calendarevents;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -15,6 +17,9 @@ import java.util.Set;
  * class to store the timings of a CalendarEvent
  */
 class Timing {
+	private String label;
+	private EventsManager eventsManager;
+
 	private ArrayList<Integer> days;
 	private ArrayList<String> dates;
 	private ArrayList<String> monthlyDates;
@@ -29,7 +34,10 @@ class Timing {
 	private int currentMonth, currentYear, currentMonthDay, currentWeekDay;
 	
 	
-	Timing(){
+	Timing(String label, EventsManager eventsManager){
+		this.label = label;
+		this.eventsManager = eventsManager;
+
 		days = new ArrayList<>();
 		monthlyDates = new ArrayList<>();
 		yearlyDates = new ArrayList<>();
@@ -39,13 +47,6 @@ class Timing {
 		
 		relevantDates = new HashSet<>();
 		relevantMillis = new HashSet<>();
-		
-		ZonedDateTime now = ZonedDateTime.now();
-		currentMonth = now.getMonthValue();
-		currentYear = now.getYear();
-		currentMonthDay = now.getDayOfMonth();
-		currentWeekDay = now.getDayOfWeek().getValue();
-		zone = ZoneId.systemDefault();
 	}
 	
 	void addDay(Integer day){
@@ -77,6 +78,15 @@ class Timing {
 			Bukkit.getConsoleSender().sendMessage("yearlyDates: " + yearlyDates.toString());
 			Bukkit.getConsoleSender().sendMessage("times: " + times.toString());
 		}
+
+		// get references for current time (need to renew)
+		ZonedDateTime now = ZonedDateTime.now();
+		currentMonth = now.getMonthValue();
+		currentYear = now.getYear();
+		currentMonthDay = now.getDayOfMonth();
+		currentWeekDay = now.getDayOfWeek().getValue();
+		zone = ZoneId.systemDefault();
+
 		// This loads all relevant dates including dates that are in the past
 		// This is for future plans of making it possible to run missed events
 		if(!dates.isEmpty()){
@@ -105,7 +115,6 @@ class Timing {
 				}
 				relevantDates.add(ZonedDateTime.of(currentYear,currentMonth,day,0,0,0,0,zone));
 				relevantDates.add(ZonedDateTime.of(currentYear,currentMonth,day,0,0,0,0,zone).plusMonths(1));
-				relevantDates.add(ZonedDateTime.of(currentYear,currentMonth,day,0,0,0,0,zone).minusMonths(1));
 			}
 		}
 		if(!yearlyDates.isEmpty()){
@@ -121,7 +130,6 @@ class Timing {
 				}
 				relevantDates.add(ZonedDateTime.of(currentYear,month,day,0,0,0,0,zone));
 				relevantDates.add(ZonedDateTime.of(currentYear,month,day,0,0,0,0,zone).plusYears(1));
-				relevantDates.add(ZonedDateTime.of(currentYear,month,day,0,0,0,0,zone).minusYears(1));
 			}
 		}
 		if(!days.isEmpty()){
@@ -131,15 +139,12 @@ class Timing {
 				if(diffDay == 0) {
 					relevantDates.add(ZonedDateTime.of(currentYear, currentMonth, currentMonthDay, 0, 0, 0, 0, zone));
 					relevantDates.add(ZonedDateTime.of(currentYear, currentMonth, currentMonthDay, 0, 0, 0, 0, zone).plusWeeks(1));
-					relevantDates.add(ZonedDateTime.of(currentYear, currentMonth, currentMonthDay, 0, 0, 0, 0, zone).minusWeeks(1));
 				} else if (diffDay > 0) {
 					relevantDates.add(ZonedDateTime.of(currentYear,currentMonth,currentMonthDay,0,0,0,0,zone).plusDays(diffDay));
 					relevantDates.add(ZonedDateTime.of(currentYear,currentMonth,currentMonthDay,0,0,0,0,zone).plusDays(diffDay).plusWeeks(1));
-					relevantDates.add(ZonedDateTime.of(currentYear,currentMonth,currentMonthDay,0,0,0,0,zone).plusDays(diffDay).minusWeeks(1));
 				} else {
 					relevantDates.add(ZonedDateTime.of(currentYear,currentMonth,currentMonthDay,0,0,0,0,zone).minusDays(diffDay));
 					relevantDates.add(ZonedDateTime.of(currentYear,currentMonth,currentMonthDay,0,0,0,0,zone).minusDays(diffDay).plusWeeks(1));
-					relevantDates.add(ZonedDateTime.of(currentYear,currentMonth,currentMonthDay,0,0,0,0,zone).minusDays(diffDay).minusWeeks(1));
 				}
 			}
 		}
@@ -159,15 +164,41 @@ class Timing {
 				relevantMillis.add(date.plusHours(hour).plusMinutes(min).toInstant().toEpochMilli());
 			}
 		}
-		setNextMilli();
 	}
 	
 	void setNextMilli(){
 		long currentMillis = System.currentTimeMillis(), toReturn = Long.MAX_VALUE;
-		for(Long milli : relevantMillis){
-			if(currentMillis > milli) continue;
+		Iterator<Long> relevantMillisIterator = relevantMillis.iterator();
+		while(relevantMillisIterator.hasNext()){
+			Long milli = relevantMillisIterator.next();
+			if(currentMillis > milli){
+				relevantMillisIterator.remove();
+				continue;
+			}
 			if(milli < toReturn){
 				toReturn = milli;
+			}
+		}
+		if(relevantMillis.isEmpty()){
+			relevantDates.clear();
+			relevantMillis.clear();
+			setUp();
+
+			relevantMillisIterator = relevantMillis.iterator();
+			while(relevantMillisIterator.hasNext()){
+				Long milli = relevantMillisIterator.next();
+				if(currentMillis > milli){
+					relevantMillisIterator.remove();
+					continue;
+				}
+				if(milli < toReturn){
+					toReturn = milli;
+				}
+			}
+			if(relevantMillis.isEmpty()){
+				Bukkit.getConsoleSender().sendMessage("[CalendarEvents] "+ ChatColor.RED+"All events with the label '" + label + "' are in the past!");
+				eventsManager.removeEvent(label);
+				return;
 			}
 		}
 		if(Main.debug)Bukkit.getConsoleSender().sendMessage("next date to schedule: " + ZonedDateTime.ofInstant(Instant.ofEpochMilli(toReturn), zone).toString());
