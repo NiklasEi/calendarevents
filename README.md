@@ -1,4 +1,4 @@
-#CalendarEvents
+# CalendarEvents
 
 This is a plugin for minecraft written with the Spigot/Bukkit API. You can find the plugin's site on Spigot here: <a href="https://www.spigotmc.org/resources/calendar-events.35536/" target="_blank">Link</a>.
 
