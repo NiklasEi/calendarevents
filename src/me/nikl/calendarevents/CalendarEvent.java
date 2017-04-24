@@ -29,7 +29,8 @@ public class CalendarEvent extends Event implements Cancellable{
 	}
 	
 	/**
-	 * return a list of the events labels
+	 * Get a list containing all labels this event was called with
+	 *
 	 * a label is the name of the event in the configuration file of the plugin CalendarEvents
 	 * @return labels
 	 */
