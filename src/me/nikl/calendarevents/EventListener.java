@@ -35,19 +35,25 @@ class EventListener implements Listener {
 	EventListener(Main plugin, Set<String> labels){
 		this.plugin = plugin;
 		this.nms = plugin.getNms();
+
+		// checking for null nms later
 		if(nms == null) Bukkit.getLogger().log(Level.WARNING, "Your version is not (jet) supported to send Titles or actionbars!");
-		this.commands = new HashMap<>();
-		this.broadcast = new HashMap<>();
-		this.broadCastWithPerm = new HashMap<>();
-		this.actionBars = new HashMap<>();
-		this.titles = new HashMap<>();
 		
 		this.labels =labels;
 		
 		loadListener();
 	}
-	
+
+	/**
+	 * Load configured actions on events
+	 */
 	private void loadListener() {
+		this.commands = new HashMap<>();
+		this.broadcast = new HashMap<>();
+		this.broadCastWithPerm = new HashMap<>();
+		this.actionBars = new HashMap<>();
+		this.titles = new HashMap<>();
+
 		FileConfiguration config = plugin.getConfig();
 		
 		if(!config.isConfigurationSection("listener")) return;
@@ -97,6 +103,8 @@ class EventListener implements Listener {
 		}
 		// go through all labels in the listener section
 		for(String label : event.getLabels()){
+
+			// check for commands on the event
 			if(commands.get(label) != null && !commands.get(label).isEmpty()){
 				for(String cmd:commands.get(label)){
 					cmd =  cmd.replaceAll("%time%", event.getTime());
@@ -109,41 +117,49 @@ class EventListener implements Listener {
 					}
 				}
 			}
-			
+
+			// check for broadcast
 			if(broadcast.get(label) != null){
 				Bukkit.broadcastMessage(broadcast.get(label).replaceAll("%time%", event.getTime()));
 			}
-			
+
+			// check for broadcast with permission node
 			if(broadCastWithPerm.get(label) != null){
 				BroadcastWithPerm broadcastWithPerm = this.broadCastWithPerm.get(label);
 				Bukkit.broadcast(broadcastWithPerm.message.replaceAll("%time%", event.getTime()), broadcastWithPerm.perm);
 			}
-			
+
+			// check for actionbar
 			if(actionBars.get(label) != null && this.nms != null){
 				ActionBar actionBar = this.actionBars.get(label);
 				String bar = actionBar.bar.replaceAll("%time%", event.getTime());
 				if(actionBar.perm == null || actionBar.perm.equals("")){
+					// no permission => send to every player
 					for(Player player : Bukkit.getOnlinePlayers()){
 						nms.sendActionbar(player, bar.replaceAll("%player%", player.getName()));
 					}
 				} else {
 					for(Player player : Bukkit.getOnlinePlayers()){
+						// check for permission node first
 						if(!player.hasPermission(actionBar.perm)) continue;
 						nms.sendActionbar(player, bar.replaceAll("%player%", player.getName()));
 					}
 				}
 			}
-			
+
+			// check for title
 			if(titles.get(label) != null && this.nms != null){
 				Title title = this.titles.get(label);
 				String titleString = title.title.replaceAll("%time%", event.getTime());
 				String subTitle = title.subTitle.replaceAll("%time%", event.getTime());
 				if(title.perm == null || title.perm.equals("")){
+					// no permission => send to every player
 					for(Player player : Bukkit.getOnlinePlayers()){
 						nms.sendTitle(player, titleString.replaceAll("%player%", player.getName()), subTitle.replaceAll("%player%", player.getName()));
 					}
 				} else {
 					for(Player player : Bukkit.getOnlinePlayers()){
+						// check for permission node first
 						if(!player.hasPermission(title.perm)) continue;
 						nms.sendTitle(player, titleString.replaceAll("%player%", player.getName()), subTitle.replaceAll("%player%", player.getName()));
 					}
@@ -151,8 +167,11 @@ class EventListener implements Listener {
 			}
 		}
 	}
-	
-	
+
+
+	/**
+	 * Store broadcast info
+	 */
 	private class BroadcastWithPerm {
 		String perm, message;
 		private BroadcastWithPerm(String perm, String message) {
@@ -160,7 +179,10 @@ class EventListener implements Listener {
 			this.message=message;
 		}
 	}
-	
+
+	/**
+	 * Store actionbar info
+	 */
 	private class ActionBar {
 		String perm, bar;
 		private ActionBar(String perm, String bar) {
@@ -168,7 +190,10 @@ class EventListener implements Listener {
 			this.bar=bar;
 		}
 	}
-	
+
+	/**
+	 * Store title info
+	 */
 	private class Title {
 		String perm, title, subTitle;
 		private Title(String perm, String title, String subTitle) {
