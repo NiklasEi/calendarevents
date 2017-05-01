@@ -1,7 +1,6 @@
 package me.nikl.calendarevents.nms;
 
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 /**
  * Created by niklas on 10/17/16.
