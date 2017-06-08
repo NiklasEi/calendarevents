@@ -50,13 +50,6 @@ public class Main extends JavaPlugin{
 		} catch (UnsupportedEncodingException | FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		
-		InputStream defConfigStream = this.getResource("config.yml");
-		if (defConfigStream != null){
-			@SuppressWarnings("deprecation")
-			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-			this.config.setDefaults(defConfig);
-		}
 	}
 	
 	
@@ -99,6 +92,10 @@ public class Main extends JavaPlugin{
 			case "v1_11_R1":
 				nms = new NMSUtil_1_11_R1();
 				
+				break;
+			case "v1_12_R1":
+				nms = new NMSUtil_1_12_R1();
+
 				break;
 		}
 		return nms != null;
