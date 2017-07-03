@@ -29,7 +29,9 @@ public class Commands implements CommandExecutor {
                     sender.sendMessage("[CalendarEvents] You have no permission!");
                     return true;
                 }
+                sender.sendMessage("[CalendarEvents] Reloading...");
                 plugin.reload();
+                sender.sendMessage("[CalendarEvents] CalendarEvents was successfully reloaded");
                 return true;
 
 
