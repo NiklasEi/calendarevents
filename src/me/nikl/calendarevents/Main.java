@@ -1,5 +1,6 @@
 package me.nikl.calendarevents;
 
+import com.google.common.base.Charsets;
 import me.nikl.calendarevents.nms.*;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -25,7 +26,7 @@ public class Main extends JavaPlugin{
 	
 	@Override
 	public void onEnable(){
-		reload();
+		reloadConfiguration();
 		setUpNMS();
 		this.eventsManager = new EventsManager(this);
 		this.timer = new Timer(this);
@@ -35,24 +36,19 @@ public class Main extends JavaPlugin{
 	
 	@Override
 	public void onDisable(){
-		this.timer.cancel();
+		if(this.timer != null) this.timer.cancel();
 	}
 	
-	private void reload() {
+	private void reloadConfiguration() {
 		if(this.con == null)this.con = new File(this.getDataFolder().toString() + File.separatorChar + "config.yml");
 		if (!con.exists()) {
 			this.saveResource("config.yml", false);
 		}
-		
+
 		// reload configuration
-		try {
-			this.config = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(this.con), "UTF-8"));
-		} catch (UnsupportedEncodingException | FileNotFoundException e) {
-			e.printStackTrace();
-		}
+		this.config = YamlConfiguration.loadConfiguration(new InputStreamReader(this.getResource("config.yml"), Charsets.UTF_8));
 	}
-	
-	
+
 	private boolean setUpNMS() {
 		String version;
 		
