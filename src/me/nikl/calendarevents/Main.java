@@ -31,6 +31,8 @@ public class Main extends JavaPlugin{
 		this.eventsManager = new EventsManager(this);
 		this.timer = new Timer(this);
 
+		this.getCommand("calendarevents").setExecutor(new Commands(this));
+
 		this.api = new APICalendarEvents(eventsManager);
 	}
 	
@@ -47,6 +49,11 @@ public class Main extends JavaPlugin{
 
 		// reload configuration
 		this.config = YamlConfiguration.loadConfiguration(new InputStreamReader(this.getResource("config.yml"), Charsets.UTF_8));
+	}
+
+	public void reload(){
+		reloadConfiguration();
+		eventsManager.reload();
 	}
 
 	private boolean setUpNMS() {

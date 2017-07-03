@@ -95,6 +95,11 @@ class EventsManager {
 		}
 	}
 
+	public void reload(){
+		timings.clear();
+		loadEventsFromConfig();
+	}
+
 	private boolean loadTimings(Timing timing, String label, String timeString){
 		String[] times = timeString.replaceAll(" ","").split(",");
 
