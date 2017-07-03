@@ -42,18 +42,24 @@ public class Main extends JavaPlugin{
 	}
 	
 	private void reloadConfiguration() {
-		if(this.con == null)this.con = new File(this.getDataFolder().toString() + File.separatorChar + "config.yml");
+		this.con = new File(this.getDataFolder().toString() + File.separatorChar + "config.yml");
 		if (!con.exists()) {
 			this.saveResource("config.yml", false);
 		}
 
 		// reload configuration
-		this.config = YamlConfiguration.loadConfiguration(new InputStreamReader(this.getResource("config.yml"), Charsets.UTF_8));
+		try {
+			this.config = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(con), Charsets.UTF_8));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void reload(){
+		if(this.timer != null) this.timer.cancel();
 		reloadConfiguration();
 		eventsManager.reload();
+		getNewTimer();
 	}
 
 	private boolean setUpNMS() {
@@ -123,5 +129,10 @@ public class Main extends JavaPlugin{
 	 */
 	public APICalendarEvents getApi(){
 		return this.api;
+	}
+
+	@Override
+	public FileConfiguration getConfig(){
+		return this.config;
 	}
 }
