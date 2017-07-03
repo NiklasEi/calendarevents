@@ -3,6 +3,7 @@ package me.nikl.calendarevents;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.event.HandlerList;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.time.Instant;
@@ -25,7 +26,8 @@ class EventsManager {
 	private FileConfiguration config;
 	
 	private Map<String, Timing> timings;
-	
+
+	private EventListener eventListener;
 
 	
 	EventsManager(Main plugin){
@@ -36,8 +38,9 @@ class EventsManager {
 		
 		timings = new HashMap<>();
 		loadEventsFromConfig();
-		
-		Bukkit.getServer().getPluginManager().registerEvents(new EventListener(plugin, timings.keySet()), plugin);
+
+		this.eventListener = new EventListener(plugin, timings.keySet());
+		Bukkit.getServer().getPluginManager().registerEvents(eventListener, plugin);
 	}
 	
 	private void loadEventsFromConfig() {
@@ -97,7 +100,11 @@ class EventsManager {
 
 	public void reload(){
 		timings.clear();
+		HandlerList.unregisterAll(eventListener);
+		config = plugin.getConfig();
 		loadEventsFromConfig();
+		this.eventListener = new EventListener(plugin, timings.keySet());
+		Bukkit.getServer().getPluginManager().registerEvents(eventListener, plugin);
 	}
 
 	private boolean loadTimings(Timing timing, String label, String timeString){
