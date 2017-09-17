@@ -143,84 +143,89 @@ class EventsManager {
 
 	private String[] handlePlaceholders(String[] times) {
 		HashSet<String> toReturn = new HashSet<>();
-		for(String string : times) toReturn.add(string);
 
-		Iterator<String> iterator = toReturn.iterator();
-		String current;
-
-		while (iterator.hasNext()){
-			current = iterator.next();
-			Bukkit.getConsoleSender().sendMessage("current timing: " + current);
-
-			// handle small and capital x
-			current.replace('X', 'x');
-
-			// check for placeholder and replace it
-			if(current.contains("x")){
-				if(current.charAt(0) == 'x'){
-					// handle placeholder in 10 hour slot
-					iterator.remove();
-					toReturn.add(current.replaceFirst("x", "0"));
-					toReturn.add(current.replaceFirst("x", "1"));
-					if(current.charAt(1) == 'x' || current.charAt(1) == '0' || current.charAt(1) == '1'
-							|| current.charAt(1) == '2' || current.charAt(1) == '3') {
-						toReturn.add(current.replaceFirst("x", "2"));
-					}
-				} else if(current.charAt(1) == 'x'){
-					// handle placeholder in hour slot
-					iterator.remove();
-					toReturn.add(current.replaceFirst("x", "0"));
-					toReturn.add(current.replaceFirst("x", "1"));
-					toReturn.add(current.replaceFirst("x", "2"));
-					toReturn.add(current.replaceFirst("x", "3"));
-					if(current.charAt(1) == '0' || current.charAt(1) == '1'){
-						toReturn.add(current.replaceFirst("x", "4"));
-						toReturn.add(current.replaceFirst("x", "5"));
-						toReturn.add(current.replaceFirst("x", "6"));
-						toReturn.add(current.replaceFirst("x", "7"));
-						toReturn.add(current.replaceFirst("x", "8"));
-						toReturn.add(current.replaceFirst("x", "9"));
-					}
-				} else if(current.charAt(3) == 'x'){
-					// handle placeholder in 10 minute slot
-					iterator.remove();
-					toReturn.add(current.replaceFirst("x", "0"));
-					toReturn.add(current.replaceFirst("x", "1"));
-					toReturn.add(current.replaceFirst("x", "2"));
-					toReturn.add(current.replaceFirst("x", "3"));
-					toReturn.add(current.replaceFirst("x", "4"));
-					toReturn.add(current.replaceFirst("x", "5"));
-				} else if(current.charAt(4) == 'x'){
-					// handle placeholder in minute slot
-					iterator.remove();
-					toReturn.add(current.replaceFirst("x", "0"));
-					toReturn.add(current.replaceFirst("x", "1"));
-					toReturn.add(current.replaceFirst("x", "2"));
-					toReturn.add(current.replaceFirst("x", "3"));
-					toReturn.add(current.replaceFirst("x", "4"));
-					toReturn.add(current.replaceFirst("x", "5"));
-					toReturn.add(current.replaceFirst("x", "6"));
-					toReturn.add(current.replaceFirst("x", "7"));
-					toReturn.add(current.replaceFirst("x", "8"));
-					toReturn.add(current.replaceFirst("x", "9"));
-				}
-			}
+		for(int i = 0; i < times.length; i++){
+			times[i] = times[i].replace("X", "x");
 		}
 
+		ArrayList<String> current = new ArrayList<>();
+
+		for (String timing : times){
+			current.clear();
+
+			if(!timing.contains("x")){
+				toReturn.add(timing);
+				continue;
+			}
+
+			current.add(timing);
+
+			ListIterator<String > iterator = current.listIterator(1);
+			while (iterator.hasPrevious()) {
+				String currentTiming = iterator.previous();
+
+				// check for placeholder and replace it
+				if (currentTiming.charAt(0) == 'x') {
+					// handle placeholder in 10 hour slot
+					iterator.remove();
+					iterator.add(currentTiming.replaceFirst("x", "0"));
+					iterator.add(currentTiming.replaceFirst("x", "1"));
+					if (currentTiming.charAt(1) == 'x' || currentTiming.charAt(1) == '0' || currentTiming.charAt(1) == '1'
+							|| currentTiming.charAt(1) == '2' || currentTiming.charAt(1) == '3') {
+						iterator.add(currentTiming.replaceFirst("x", "2"));
+					}
+				} else if (currentTiming.charAt(1) == 'x') {
+					// handle placeholder in hour slot
+					iterator.remove();
+					iterator.add(currentTiming.replaceFirst("x", "0"));
+					iterator.add(currentTiming.replaceFirst("x", "1"));
+					iterator.add(currentTiming.replaceFirst("x", "2"));
+					iterator.add(currentTiming.replaceFirst("x", "3"));
+					if (currentTiming.charAt(0) == '0' || currentTiming.charAt(0) == '1') {
+						iterator.add(currentTiming.replaceFirst("x", "4"));
+						iterator.add(currentTiming.replaceFirst("x", "5"));
+						iterator.add(currentTiming.replaceFirst("x", "6"));
+						iterator.add(currentTiming.replaceFirst("x", "7"));
+						iterator.add(currentTiming.replaceFirst("x", "8"));
+						iterator.add(currentTiming.replaceFirst("x", "9"));
+					}
+				} else if (currentTiming.charAt(3) == 'x') {
+					// handle placeholder in 10 minute slot
+					iterator.remove();
+					iterator.add(currentTiming.replaceFirst("x", "0"));
+					iterator.add(currentTiming.replaceFirst("x", "1"));
+					iterator.add(currentTiming.replaceFirst("x", "2"));
+					iterator.add(currentTiming.replaceFirst("x", "3"));
+					iterator.add(currentTiming.replaceFirst("x", "4"));
+					iterator.add(currentTiming.replaceFirst("x", "5"));
+				} else if (currentTiming.charAt(4) == 'x') {
+					iterator.remove();
+					// handle placeholder in minute slot
+					iterator.add(currentTiming.replaceFirst("x", "0"));
+					iterator.add(currentTiming.replaceFirst("x", "1"));
+					iterator.add(currentTiming.replaceFirst("x", "2"));
+					iterator.add(currentTiming.replaceFirst("x", "3"));
+					iterator.add(currentTiming.replaceFirst("x", "4"));
+					iterator.add(currentTiming.replaceFirst("x", "5"));
+					iterator.add(currentTiming.replaceFirst("x", "6"));
+					iterator.add(currentTiming.replaceFirst("x", "7"));
+					iterator.add(currentTiming.replaceFirst("x", "8"));
+					iterator.add(currentTiming.replaceFirst("x", "9"));
+				}
+			}
+
+			// current contains timing with all possible placeholder values
+			toReturn.addAll(current);
+		}
 
 		// fill set into new array to return
 		String[] arrayToReturn = new String[toReturn.size()];
 
-		iterator = toReturn.iterator();
+		Iterator<String> iterator = toReturn.iterator();
 		int i = 0;
-
-		Bukkit.getConsoleSender().sendMessage("Final timings");
-		Bukkit.getConsoleSender().sendMessage(" ");
 
 		while(iterator.hasNext()){
 			arrayToReturn[i] = iterator.next();
-			Bukkit.getConsoleSender().sendMessage(arrayToReturn[i]);
-
 			i++;
 		}
 
