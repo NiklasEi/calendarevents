@@ -82,3 +82,6 @@ listener:
   newYearAndSeventh:
     broadcast: "Yay it's new year!!   Or wait... is it already the 7th?"
 
+# CalendarEvents is on bStats. If you don't want any anonymous data to be send, you can opt it out here.
+bstats:
+  disabled: false

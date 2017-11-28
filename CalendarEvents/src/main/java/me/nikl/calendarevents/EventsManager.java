@@ -468,4 +468,8 @@ class EventsManager {
 	void removeEvent(String label){
 		this.timings.remove(label);
 	}
+
+    public int getNumberOfEvents() {
+		return timings.keySet().size();
+    }
 }

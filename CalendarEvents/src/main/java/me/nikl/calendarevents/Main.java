@@ -2,12 +2,17 @@ package me.nikl.calendarevents;
 
 import com.google.common.base.Charsets;
 import me.nikl.calendarevents.nms.*;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
 
 /**
  * Main class
@@ -22,6 +27,8 @@ public class Main extends JavaPlugin{
 	private FileConfiguration config;
 
 	private APICalendarEvents api;
+
+	private Metrics metrics;
 	
 	
 	@Override
@@ -34,8 +41,25 @@ public class Main extends JavaPlugin{
 		this.getCommand("calendarevents").setExecutor(new Commands(this));
 
 		this.api = new APICalendarEvents(eventsManager);
+
+		setUpMetrics();
 	}
-	
+
+	private void setUpMetrics() {
+
+		// send data with bStats if not opt out
+		if(!config.getBoolean("bstats.disabled", false)) {
+			metrics = new Metrics(this);
+
+			// Pie chart with number of games
+			metrics.addCustomChart(new Metrics.SimplePie("number_of_events"
+					, () -> String.valueOf(eventsManager.getNumberOfEvents())));
+
+		} else {
+			Bukkit.getConsoleSender().sendMessage("[" + ChatColor.DARK_AQUA + "CalendarEvents" + ChatColor.RESET + "]" + " You have opt out bStats... That's sad!");
+		}
+	}
+
 	@Override
 	public void onDisable(){
 		if(this.timer != null) this.timer.cancel();
