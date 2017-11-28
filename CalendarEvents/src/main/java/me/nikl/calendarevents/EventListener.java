@@ -64,7 +64,7 @@ class EventListener implements Listener {
 			
 			// check whether the label is a configured event
 			if(!labels.contains(label)){
-				Bukkit.getLogger().log(Level.WARNING, "Section 'listener' contains actions for a not scheduled event: " + label);
+				Bukkit.getLogger().log(Level.WARNING, "[CalendarEvents] " + "Section 'listener' contains actions for a not scheduled event: " + label);
 				continue;
 			}
 			if(listener.isList(label + ".commands")){
