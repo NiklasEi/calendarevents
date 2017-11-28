@@ -1,3 +1,9 @@
+v 1.3.1:
+- mavenized the repository
+- fix scheduling bug (happening when a daily event is loaded on a day that comes after the event day...)
+- added CalendarEvents to bStats (can be opt out in config)
+- added missing Prefix in warnings
+
 
 v 1.3.0:
 - add support for placeholders in timings
@@ -10,8 +16,6 @@ v 1.3.0:
         will call an event on every full hour and at 11:18
     
     
-===================================================================================
-
 v 1.1.0:
 - added api to add events on runtime
 - checking for existing events with same label (no overriding)
