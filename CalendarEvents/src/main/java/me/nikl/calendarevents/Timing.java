@@ -143,8 +143,8 @@ class Timing {
 					relevantDates.add(ZonedDateTime.of(currentYear,currentMonth,currentMonthDay,0,0,0,0,zone).plusDays(diffDay));
 					relevantDates.add(ZonedDateTime.of(currentYear,currentMonth,currentMonthDay,0,0,0,0,zone).plusDays(diffDay).plusWeeks(1));
 				} else {
-					relevantDates.add(ZonedDateTime.of(currentYear,currentMonth,currentMonthDay,0,0,0,0,zone).minusDays(diffDay));
-					relevantDates.add(ZonedDateTime.of(currentYear,currentMonth,currentMonthDay,0,0,0,0,zone).minusDays(diffDay).plusWeeks(1));
+					relevantDates.add(ZonedDateTime.of(currentYear,currentMonth,currentMonthDay,0,0,0,0,zone).minusDays(-diffDay));
+					relevantDates.add(ZonedDateTime.of(currentYear,currentMonth,currentMonthDay,0,0,0,0,zone).minusDays(-diffDay).plusWeeks(1));
 				}
 			}
 		}
