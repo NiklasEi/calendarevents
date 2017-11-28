@@ -209,7 +209,4 @@ class Timing {
 	long getNextCall(){
 		return this.nextCall;
 	}
-	
-	
-	
 }
