@@ -20,3 +20,5 @@ out/*
 .settings/
 .project
 .classpath
+
+target/

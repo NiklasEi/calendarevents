@@ -167,7 +167,8 @@ class Timing {
 	}
 	
 	void setNextMilli(){
-		long currentMillis = System.currentTimeMillis(), toReturn = Long.MAX_VALUE;
+		long currentMillis = System.currentTimeMillis()
+				, toReturn = Long.MAX_VALUE;
 		Iterator<Long> relevantMillisIterator = relevantMillis.iterator();
 		while(relevantMillisIterator.hasNext()){
 			Long milli = relevantMillisIterator.next();
