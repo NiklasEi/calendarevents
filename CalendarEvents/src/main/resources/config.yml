@@ -15,7 +15,7 @@ events:
   newMonth:
     timing:
       # this will get called on every first of the month
-      #   you can add more dates to the '01' just put a ',' inbetween
+      #   you can add more dates to the '01' just put a ',' in between
       occasion: "01"
       time: "00:00"
   # event called on the first of every week
@@ -76,12 +76,13 @@ listener:
     title:
       # perm is optional. If empty, the title will be send to everyone
       perm: ""
-      title: "&1That's the title (%time%)"
-      subTitle: "With a &4subtitle %player%"
+      title: "&1Hi there %player%"
+      subTitle: "It's now &4%time%&r!"
 
   newYearAndSeventh:
-    broadcast: "Yay it's new year!!   Or wait... is it already the 7th?"
+    broadcast: "Happy new year!!   Or wait... is it already the 7th?"
 
-# CalendarEvents is on bStats. If you don't want any anonymous data to be send, you can opt it out here.
+# CalendarEvents is on bStats: https://bstats.org/plugin/bukkit/CalendarEvents
+# If you don't want any anonymous data to be send, you can opt it out here.
 bstats:
   disabled: false
