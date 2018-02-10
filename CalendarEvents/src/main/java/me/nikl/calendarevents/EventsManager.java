@@ -20,22 +20,15 @@ import java.util.logging.Level;
  *
  * Events are called by this class
  */
-class EventsManager {
+class EventsManager implements APICalendarEvents {
 	private Main plugin;
-	
 	private FileConfiguration config;
-	
 	private Map<String, Timing> timings;
-
 	private EventListener eventListener;
-
 	
 	EventsManager(Main plugin){
 		this.plugin = plugin;
-		
-		
 		config = plugin.getConfig();
-		
 		timings = new HashMap<>();
 		loadEventsFromConfig();
 
@@ -44,64 +37,54 @@ class EventsManager {
 	}
 	
 	private void loadEventsFromConfig() {
-
 		if(!config.isConfigurationSection("events")) return;
 		ConfigurationSection events = config.getConfigurationSection("events");
-		if(Main.debug) Bukkit.getConsoleSender().sendMessage("***********************************************************************************");
-		events:
+		Main.debug("***********************************************************************************");
 		for (String key : events.getKeys(false)){
 			if(!events.isString(key + ".timing.occasion") || !events.isString(key + ".timing.time")){
 				Bukkit.getLogger().log(Level.WARNING, "Could not load the event '" + key + "'");
+				Bukkit.getLogger().log(Level.WARNING, "Due to missing occasion or timing.");
 				Bukkit.getLogger().log(Level.WARNING, "...  Skipping the event  ...");
-				if(Main.debug) Bukkit.getConsoleSender().sendMessage("***********************************************************************************");
-				continue events;
+				Main.debug("***********************************************************************************");
+				continue;
 			}
-
 			if(timings.containsKey(key)){
 				Bukkit.getLogger().log(Level.WARNING, "There is already an event with the label '" + key + "'");
 				Bukkit.getLogger().log(Level.WARNING, "...  Skipping the event  ...");
-				if(Main.debug) Bukkit.getConsoleSender().sendMessage("***********************************************************************************");
-				continue events;
+				Main.debug("***********************************************************************************");
+				continue;
 			}
-			
 			Timing timing = new Timing(key, this);
-			
-			
-			/*
-			  from here on handle occasions and load them into the timing object
-			 */
+
+			// from here on handle occasions and load them into the timing object
 			String occasionString = events.getString(key + ".timing.occasion");
-
 			if(!loadOccasion(timing, key, occasionString)){
-				continue events;
+				continue;
 			}
-
-			/*
-			  read timings
-			 */
 			String timeString = events.getString(key + ".timing.time");
-
 			if(!loadTimings(timing, key, timeString)){
-				continue events;
+				continue;
 			}
 
-			if(Main.debug) Bukkit.getConsoleSender().sendMessage("Listing loaded dates and times from: " + key);
+			// additional debugging inside timing setup
+			Main.debug("Listing loaded dates and times from: " + key);
 			timing.setUp();
-			if(Main.debug) Bukkit.getConsoleSender().sendMessage("***********************************************************************************");
+			Main.debug("***********************************************************************************");
 
-		    /*
-		    important: keep setNextMilli behind adding to the Map
-		    since setNextMilli can remove it again if all dates are in the past
-		     */
+		    // important: keep setNextMilli behind adding to the Map
+		    // since setNextMilli can remove it again if all dates are in the past
 			timings.put(key, timing);
 			timing.setNextMilli();
 		}
 	}
 
 	public void reload(){
-		timings.clear();
+		Map<String, Timing> apiRegisteredTimings = getAllApiRegisteredTimings();
 		HandlerList.unregisterAll(eventListener);
+		plugin.reloadConfiguration();
 		config = plugin.getConfig();
+		timings.clear();
+		timings.putAll(apiRegisteredTimings);
 		loadEventsFromConfig();
 		this.eventListener = new EventListener(plugin, timings.keySet());
 		Bukkit.getServer().getPluginManager().registerEvents(eventListener, plugin);
@@ -109,11 +92,8 @@ class EventsManager {
 
 	private boolean loadTimings(Timing timing, String label, String timeString){
 		String[] times = timeString.replaceAll(" ","").split(",");
-
 		times = handlePlaceholders(times);
-
 		int shortTermInt1, shortTermInt2;
-
 		for (String time : times){
 			String[] timeParts = time.split(":");
 			if(timeParts.length !=2 || timeParts[0].length() != 2 || timeParts[1].length() != 2){
@@ -127,15 +107,16 @@ class EventsManager {
 
 				if(shortTermInt1 > 23 || shortTermInt1 < 0 || shortTermInt2 > 59 || shortTermInt2 < 0){
 					Bukkit.getLogger().log(Level.WARNING, "Could not load the time '" + time + "' in the event '" + label + "'");
+					Bukkit.getLogger().log(Level.WARNING, "Timing has invalid values! Use 24h format.");
 					Bukkit.getLogger().log(Level.WARNING, "...  Skipping the event  ...");
 					return false;
 				}
 			} catch (Exception e) {
 				Bukkit.getLogger().log(Level.WARNING, "Could not load the time '" + time + "' in the event '" + label + "'");
+				Bukkit.getLogger().log(Level.WARNING, "Timing has invalid values! Use integers.");
 				Bukkit.getLogger().log(Level.WARNING, "...  Skipping the event  ...");
 				return false;
 			}
-
 			timing.addTime(time);
 		}
 		return true;
@@ -143,23 +124,18 @@ class EventsManager {
 
 	private String[] handlePlaceholders(String[] times) {
 		HashSet<String> toReturn = new HashSet<>();
-
+		// support X and x
 		for(int i = 0; i < times.length; i++){
 			times[i] = times[i].replace("X", "x");
 		}
-
 		ArrayList<String> current = new ArrayList<>();
-
 		for (String timing : times){
 			current.clear();
-
 			if(!timing.contains("x")){
 				toReturn.add(timing);
 				continue;
 			}
-
 			current.add(timing);
-
 			ListIterator<String > iterator = current.listIterator(1);
 			while (iterator.hasPrevious()) {
 				String currentTiming = iterator.previous();
@@ -213,23 +189,16 @@ class EventsManager {
 					iterator.add(currentTiming.replaceFirst("x", "9"));
 				}
 			}
-
-			// current contains timing with all possible placeholder values
+			// current now contains timing with all possible placeholder values
 			toReturn.addAll(current);
 		}
-
-		// fill set into new array to return
 		String[] arrayToReturn = new String[toReturn.size()];
-
 		Iterator<String> iterator = toReturn.iterator();
 		int i = 0;
-
 		while(iterator.hasNext()){
 			arrayToReturn[i] = iterator.next();
 			i++;
 		}
-
-		// return with all placeholders handled
 		return arrayToReturn;
 	}
 
@@ -247,11 +216,11 @@ class EventsManager {
 
 		occasionString = occasionString.replaceAll(" ", "");
 		String[] occasions = occasionString.split(",");
-		if(Main.debug) Bukkit.getConsoleSender().sendMessage("occasions: " + Arrays.asList(occasions));
+		Main.debug("occasions: " + Arrays.asList(occasions));
 
 		singleOccasion:
 		for(String singleOccasion : occasions) {
-			if(Main.debug) Bukkit.getConsoleSender().sendMessage("singleOccasion: " + singleOccasion);
+			Main.debug("singleOccasion: " + singleOccasion);
 			if (!singleOccasion.contains(".")) {
 				// month-date or days
 				if (singleOccasion.equalsIgnoreCase("monday") || singleOccasion.equalsIgnoreCase("tuesday") || singleOccasion.equalsIgnoreCase("wednesday") || singleOccasion.equalsIgnoreCase("thursday") || singleOccasion.equalsIgnoreCase("friday") || singleOccasion.equalsIgnoreCase("saturday") || singleOccasion.equalsIgnoreCase("sunday")) {
@@ -286,25 +255,25 @@ class EventsManager {
 					} catch (Exception e) {
 						Bukkit.getLogger().log(Level.WARNING, "Could not load the dd date '" + singleOccasion + "' in the event '" + label + "'");
 						Bukkit.getLogger().log(Level.WARNING, "...  Skipping the event  ...");
-						if(Main.debug) Bukkit.getConsoleSender().sendMessage("***********************************************************************************");
+						Main.debug("***********************************************************************************");
 						return false;
 					}
 					timing.addMonthlyDate(singleOccasion);
 				} else {
 					Bukkit.getLogger().log(Level.WARNING, "Could not load the dd date or day '" + singleOccasion + "' in the event '" + label + "'");
 					Bukkit.getLogger().log(Level.WARNING, "...  Skipping the event  ...");
-					if(Main.debug) Bukkit.getConsoleSender().sendMessage("***********************************************************************************");
+					Main.debug("***********************************************************************************");
 					return false;
 				}
 			} else {
 				String[] dateParts = singleOccasion.split("\\.");
-				if(Main.debug) Bukkit.getConsoleSender().sendMessage("dateParts: " + Arrays.asList(dateParts));
+				Main.debug("dateParts: " + Arrays.asList(dateParts));
 				if (dateParts.length == 2) {
 					// year-date
 					if (!(dateParts[0].length() == 2 && dateParts[1].length() == 2)) {
 						Bukkit.getLogger().log(Level.WARNING, "Could not load the dd.mm date '" + singleOccasion + "' in the event '" + label + "'");
 						Bukkit.getLogger().log(Level.WARNING, "...  Skipping the event  ...");
-						if(Main.debug) Bukkit.getConsoleSender().sendMessage("***********************************************************************************");
+						Main.debug("***********************************************************************************");
 						return false;
 					}
 					for (String datePart : dateParts) {
@@ -313,7 +282,7 @@ class EventsManager {
 						} catch (Exception e) {
 							Bukkit.getLogger().log(Level.WARNING, "Could not load the dd.mm date '" + singleOccasion + "' in the event '" + label + "'");
 							Bukkit.getLogger().log(Level.WARNING, "...  Skipping the event  ...");
-							if(Main.debug) Bukkit.getConsoleSender().sendMessage("***********************************************************************************");
+							Main.debug("***********************************************************************************");
 							return false;
 						}
 					}
@@ -324,7 +293,7 @@ class EventsManager {
 					if (!(dateParts[0].length() == 2 && dateParts[1].length() == 2 && dateParts[2].length() == 4)) {
 						Bukkit.getLogger().log(Level.WARNING, "Could not load the date '" + singleOccasion + "' in the event '" + label + "'");
 						Bukkit.getLogger().log(Level.WARNING, "...  Skipping the event  ...");
-						if(Main.debug) Bukkit.getConsoleSender().sendMessage("***********************************************************************************");
+						Main.debug("***********************************************************************************");
 						return false;
 					}
 					for (String datePart : dateParts) {
@@ -333,17 +302,16 @@ class EventsManager {
 						} catch (Exception e) {
 							Bukkit.getLogger().log(Level.WARNING, "Could not load the date '" + singleOccasion + "' in the event '" + label + "'");
 							Bukkit.getLogger().log(Level.WARNING, "...  Skipping the event  ...");
-							if(Main.debug) Bukkit.getConsoleSender().sendMessage("***********************************************************************************");
+							Main.debug("***********************************************************************************");
 							return false;
 						}
 					}
 					timing.addDate(singleOccasion);
 
-
 				} else {
 					Bukkit.getLogger().log(Level.WARNING, "Could not load the general date '" + singleOccasion + "' in the event '" + label + "'");
 					Bukkit.getLogger().log(Level.WARNING, "...  Skipping the event  ...");
-					if(Main.debug) Bukkit.getConsoleSender().sendMessage("***********************************************************************************");
+					Main.debug("***********************************************************************************");
 					return false;
 				}
 			}
@@ -355,7 +323,7 @@ class EventsManager {
 		// labels not empty!
 		long callMilli = timings.get(labels.get(0)).getNextCall(), current = System.currentTimeMillis();
 		if(callMilli > current){
-			if(Main.debug)Bukkit.getConsoleSender().sendMessage("rescheduling " + labels.toString() + " by " +((callMilli - current)/50 + 1 )+ "tics");
+			Main.debug("rescheduling " + labels.toString() + " by " +((callMilli - current)/50 + 1 )+ "tics");
 			new BukkitRunnable(){
 				@Override
 				public void run() {
@@ -365,19 +333,15 @@ class EventsManager {
 							callEvent(labels);
 						}
 					}.runTask(plugin);
-					
 				}
 			}.runTaskLaterAsynchronously(plugin, (callMilli - current)/50 + 1);
 			return;
 		}
-		
-		
-		if(Main.debug) Bukkit.getConsoleSender().sendMessage("calling " + labels.toString());
+		Main.debug("calling " + labels.toString());
 		Bukkit.getPluginManager().callEvent(new CalendarEvent(labels));
 		
-		
-		// before the next timer checks for new events to call in the next minute, this will ensure that
-		//   all called events have up to date next millis
+		// before the next timer checks for new events to call in the next minute.
+		// This will ensure that all called events have up to date next millis
 		new BukkitRunnable(){
 			@Override
 			public void run() {
@@ -390,7 +354,6 @@ class EventsManager {
 						}
 					}
 				}.runTask(plugin);
-				
 			}
 		}.runTaskLaterAsynchronously(plugin, 100);
 	}
@@ -410,8 +373,7 @@ class EventsManager {
 			}
 		}
 		if(!toCall.isEmpty()){
-			if(Main.debug)Bukkit.getConsoleSender().sendMessage("scheduling " + toCall.toString() + " for " + ZonedDateTime.ofInstant(Instant.ofEpochMilli(milli), ZoneId.systemDefault()));
-			
+			Main.debug("scheduling " + toCall.toString() + " for " + ZonedDateTime.ofInstant(Instant.ofEpochMilli(milli), ZoneId.systemDefault()));
 			// this call is already pretty accurate (+- a few tics)
 			//   it is made more accurate by a recheck of the timings in callEvent
 			new BukkitRunnable(){
@@ -423,10 +385,9 @@ class EventsManager {
 							callEvent(toCall);
 						}
 					}.runTask(plugin);
-					
 				}
 			}.runTaskLaterAsynchronously(plugin, diff*20 + 10);
-			if(Main.debug)Bukkit.getConsoleSender().sendMessage("scheduled");
+			Main.debug("scheduled");
 		}
 	}
 	
@@ -434,42 +395,43 @@ class EventsManager {
 		timings.values().forEach(Timing::setNextMilli);
 	}
 
-
+	@Override
 	public boolean addEvent(String label, String occasions, String timings) {
 		if (this.timings.keySet().contains(label)){
 			return false;
 		}
-
 		Timing timing = new Timing(label, this);
-
-
 		if(!loadOccasion(timing, label, occasions)){
 			return false;
 		}
-
 		if(!loadTimings(timing, label, timings)){
 			return false;
 		}
-
-		if(Main.debug) Bukkit.getConsoleSender().sendMessage("Listing loaded dates and times from: " + label);
+		Main.debug("Listing loaded dates and times from: " + label);
 		timing.setUp();
-		if(Main.debug) Bukkit.getConsoleSender().sendMessage("***********************************************************************************");
-
-		/*
-		important: keep setNextMilli behind adding to the Map
-		since setNextMilli can remove it again if all dates are in the past
-		 */
+		Main.debug("***********************************************************************************");
+		// important: keep setNextMilli behind adding to the Map
+		// since setNextMilli can remove it again if all dates are in the past
 		this.timings.put(label, timing);
 		timing.setNextMilli();
-
 		return true;
 	}
 
-	void removeEvent(String label){
+	@Override
+	public void removeEvent(String label){
 		this.timings.remove(label);
 	}
 
-    public int getNumberOfEvents() {
+    int getNumberOfEvents() {
 		return timings.keySet().size();
     }
+
+	private Map<String,Timing> getAllApiRegisteredTimings() {
+		HashMap<String, Timing> toReturn = new HashMap<>();
+		for(String label : timings.keySet()){
+			if(config.isConfigurationSection("events." + label)) continue;
+			toReturn.put(label, timings.get(label));
+		}
+		return toReturn;
+	}
 }

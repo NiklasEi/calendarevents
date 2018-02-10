@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 /**
  * Event called at a specified date and time.
- * Use getLabels() and check for the label you are looking for.
+ * Use {@link CalendarEvent#getLabels()} and check for the label you are looking for.
  * The label is the key of the event in the configuration file of the plugin 'CalendarEvents'
  */
 public class CalendarEvent extends Event implements Cancellable{

@@ -1,3 +1,5 @@
+- events registered through the api will not be lost anymore due to a CalendarEvents reload.
+
 v 1.3.1:
 - mavenized the repository
 - fix scheduling bug (happening when a daily event is loaded on a day that comes after the event day...)

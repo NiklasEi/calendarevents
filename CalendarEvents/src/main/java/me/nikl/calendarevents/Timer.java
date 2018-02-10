@@ -39,8 +39,7 @@ class Timer extends BukkitRunnable{
 	
 	@Override
 	public void run() {
-		if(Main.debug)
-			Bukkit.getConsoleSender().sendMessage("Timer run");
+		Main.debug("Timer run");
 		new BukkitRunnable(){
 			@Override
 			public void run() {
@@ -52,7 +51,7 @@ class Timer extends BukkitRunnable{
 		//   tolerance: xx:20 to xx:40
 		int sec = ZonedDateTime.now().getSecond();
 		if(sec < 20 || sec > 40){
-			if(Main.debug) Bukkit.getConsoleSender().sendMessage("out of tolerance");
+			Main.debug("out of tolerance");
 			plugin.getNewTimer();
 			cancel();
 		}

@@ -97,10 +97,8 @@ class EventListener implements Listener {
 	
 	@EventHandler
 	public void onCalendarEvent(CalendarEvent event){
-		if(Main.debug) {
-			Bukkit.getConsoleSender().sendMessage("[Listener] event called: " + event.getLabels().toString());
-			Bukkit.getConsoleSender().sendMessage("[Listener] called at: " + event.getTime());
-		}
+		Main.debug("[Listener] event called: " + event.getLabels().toString());
+		Main.debug("[Listener] called at: " + event.getTime());
 		// go through all labels in the listener section
 		for(String label : event.getLabels()){
 

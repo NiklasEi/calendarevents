@@ -8,13 +8,7 @@ package me.nikl.calendarevents;
  * This API enables you to add events to the EventManager from other plugins.
  * You can listen for these custom events (see: )
  */
-public class APICalendarEvents {
-    private EventsManager eventsManager;
-
-
-    public APICalendarEvents(EventsManager eventsManager){
-        this.eventsManager = eventsManager;
-    }
+public interface APICalendarEvents {
 
     /**
      * Add a CalendarEvent to the EventManager
@@ -25,16 +19,12 @@ public class APICalendarEvents {
      * @param timings the timings (e.g. '14:25, 16:59' see configuration file of this plugin for more examples)
      * @return success in adding the event
      */
-    public boolean addEvent(String label, String occasions, String timings){
-        return eventsManager.addEvent(label, occasions, timings);
-    }
+    boolean addEvent(String label, String occasions, String timings);
 
     /**
      * Remove the event with the given label.
      *
      * @param label label of the event to remove
      */
-    public void removeEvent(String label){
-        eventsManager.removeEvent(label);
-    }
+    void removeEvent(String label);
 }

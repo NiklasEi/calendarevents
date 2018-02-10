@@ -10,26 +10,19 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Callable;
 
 /**
  * Main class
  */
 public class Main extends JavaPlugin{
+	private static final boolean DEBUG = false;
 	private NMSUtil nms;
 	private Timer timer;
 	private EventsManager eventsManager;
-	static boolean debug = false;
-	
-	private File con;
-	private FileConfiguration config;
-
-	private APICalendarEvents api;
-
+	private File configurationFile;
+	private FileConfiguration configuration;
 	private Metrics metrics;
-	
+
 	
 	@Override
 	public void onEnable(){
@@ -37,24 +30,17 @@ public class Main extends JavaPlugin{
 		setUpNMS();
 		this.eventsManager = new EventsManager(this);
 		this.timer = new Timer(this);
-
 		this.getCommand("calendarevents").setExecutor(new Commands(this));
-
-		this.api = new APICalendarEvents(eventsManager);
-
 		setUpMetrics();
 	}
 
 	private void setUpMetrics() {
 
 		// send data with bStats if not opt out
-		if(!config.getBoolean("bstats.disabled", false)) {
+		if(!configuration.getBoolean("bstats.disabled", false)) {
 			metrics = new Metrics(this);
-
-			// Pie chart with number of games
 			metrics.addCustomChart(new Metrics.SimplePie("number_of_events"
 					, () -> String.valueOf(eventsManager.getNumberOfEvents())));
-
 		} else {
 			Bukkit.getConsoleSender().sendMessage("[" + ChatColor.DARK_AQUA + "CalendarEvents" + ChatColor.RESET + "]" + " You have opt out bStats... That's sad!");
 		}
@@ -65,15 +51,13 @@ public class Main extends JavaPlugin{
 		if(this.timer != null) this.timer.cancel();
 	}
 	
-	private void reloadConfiguration() {
-		this.con = new File(this.getDataFolder().toString() + File.separatorChar + "config.yml");
-		if (!con.exists()) {
+	void reloadConfiguration() {
+		this.configurationFile = new File(this.getDataFolder().toString() + File.separatorChar + "config.yml");
+		if (!configurationFile.exists()) {
 			this.saveResource("config.yml", false);
 		}
-
-		// reload configuration
 		try {
-			this.config = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(con), Charsets.UTF_8));
+			this.configuration = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(configurationFile), Charsets.UTF_8));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -81,54 +65,42 @@ public class Main extends JavaPlugin{
 
 	public void reload(){
 		if(this.timer != null) this.timer.cancel();
-		reloadConfiguration();
 		eventsManager.reload();
 		getNewTimer();
 	}
 
 	private boolean setUpNMS() {
 		String version;
-		
 		try {
 			version = Bukkit.getServer().getClass().getPackage().getName().replace(".",  ",").split(",")[3];
 		} catch (ArrayIndexOutOfBoundsException e) {
 			return false;
 		}
-		
-		if(debug) getLogger().info("Your server is running version " + version);
-		
+		debug("Your server is running version " + version);
 		switch (version) {
 			case "v1_10_R1":
 				nms = new NMSUtil_1_10_R1();
-				
 				break;
 			case "v1_9_R2":
 				nms = new NMSUtil_1_9_R2();
-				
 				break;
 			case "v1_9_R1":
 				nms = new NMSUtil_1_9_R1();
-				
 				break;
 			case "v1_8_R3":
 				nms = new NMSUtil_1_8_R3();
-				
 				break;
 			case "v1_8_R2":
 				nms = new NMSUtil_1_8_R2();
-				
 				break;
 			case "v1_8_R1":
 				nms = new NMSUtil_1_8_R1();
-				
 				break;
 			case "v1_11_R1":
 				nms = new NMSUtil_1_11_R1();
-				
 				break;
 			case "v1_12_R1":
 				nms = new NMSUtil_1_12_R1();
-
 				break;
 		}
 		return nms != null;
@@ -152,11 +124,15 @@ public class Main extends JavaPlugin{
 	 * @return API instance
 	 */
 	public APICalendarEvents getApi(){
-		return this.api;
+		return this.eventsManager;
 	}
 
 	@Override
 	public FileConfiguration getConfig(){
-		return this.config;
+		return this.configuration;
+	}
+
+	static void debug(String message){
+		if(DEBUG) Bukkit.getLogger().info(message);
 	}
 }
