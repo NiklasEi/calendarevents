@@ -1,4 +1,6 @@
+v 1.3.2
 - events registered through the api will not be lost anymore due to a CalendarEvents reload.
+- create and use NmsFactory
 
 v 1.3.1:
 - mavenized the repository
