@@ -12,5 +12,5 @@ For more information and some examples visit the [plugins site on Spigot][spigot
 
 
 [spigot]: https://www.spigotmc.org/resources/calendar-events.35536/
-[example]: https://github.com/NiklasEi/EggsampleCalendarEventsAPI
+[example]: https://github.com/NiklasEi/ExampleCalendarEventsAPI
 [hp]: https://www.nikl.me/projects/CalendarEvents/
