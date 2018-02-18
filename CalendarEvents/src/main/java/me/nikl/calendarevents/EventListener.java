@@ -1,6 +1,7 @@
 package me.nikl.calendarevents;
 
 import me.nikl.calendarevents.nms.NMSUtil;
+import me.nikl.calendarevents.nms.NmsFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -34,7 +35,7 @@ class EventListener implements Listener {
 	
 	EventListener(Main plugin, Set<String> labels){
 		this.plugin = plugin;
-		this.nms = plugin.getNms();
+		this.nms = NmsFactory.getNmsUtil();
 
 		// checking for null nms later
 		if(nms == null) Bukkit.getLogger().log(Level.WARNING, "Your version is not (jet) supported to send Titles or actionbars!");

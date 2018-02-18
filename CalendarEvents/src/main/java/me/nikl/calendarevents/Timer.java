@@ -16,7 +16,7 @@ class Timer extends BukkitRunnable{
 	
 	Timer(Main plugin){
 		this.plugin = plugin;
-		this.eventsManager = plugin.getEventsManager();
+		this.eventsManager = (EventsManager) plugin.getApi();
 		
 		int diff = ZonedDateTime.now().getSecond() - 30;
 		

@@ -27,7 +27,11 @@ public class Main extends JavaPlugin{
 	@Override
 	public void onEnable(){
 		reloadConfiguration();
-		setUpNMS();
+		if ((nms = NmsFactory.getNmsUtil()) == null){
+			getLogger().warning(" This plugin is not compatible with your current server version!");
+			Bukkit.getPluginManager().disablePlugin(this);
+			return;
+		}
 		this.eventsManager = new EventsManager(this);
 		this.timer = new Timer(this);
 		this.getCommand("calendarevents").setExecutor(new Commands(this));
@@ -67,51 +71,6 @@ public class Main extends JavaPlugin{
 		if(this.timer != null) this.timer.cancel();
 		eventsManager.reload();
 		getNewTimer();
-	}
-
-	private boolean setUpNMS() {
-		String version;
-		try {
-			version = Bukkit.getServer().getClass().getPackage().getName().replace(".",  ",").split(",")[3];
-		} catch (ArrayIndexOutOfBoundsException e) {
-			return false;
-		}
-		debug("Your server is running version " + version);
-		switch (version) {
-			case "v1_10_R1":
-				nms = new NMSUtil_1_10_R1();
-				break;
-			case "v1_9_R2":
-				nms = new NMSUtil_1_9_R2();
-				break;
-			case "v1_9_R1":
-				nms = new NMSUtil_1_9_R1();
-				break;
-			case "v1_8_R3":
-				nms = new NMSUtil_1_8_R3();
-				break;
-			case "v1_8_R2":
-				nms = new NMSUtil_1_8_R2();
-				break;
-			case "v1_8_R1":
-				nms = new NMSUtil_1_8_R1();
-				break;
-			case "v1_11_R1":
-				nms = new NMSUtil_1_11_R1();
-				break;
-			case "v1_12_R1":
-				nms = new NMSUtil_1_12_R1();
-				break;
-		}
-		return nms != null;
-	}
-	
-	NMSUtil getNms(){
-		return this.nms;
-	}
-	
-	EventsManager getEventsManager(){
-		return this.eventsManager;
 	}
 	
 	void getNewTimer() {
