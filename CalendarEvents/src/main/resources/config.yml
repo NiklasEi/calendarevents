@@ -4,63 +4,69 @@
 #                                                                             #
 # ----------------------------------------------------------------------------#
 
-# the following events are for you to understand the way you can produce custom events with this plugin
-#   they all get called. You can remove or add any number of events you want. Just make sure that the labels are different.
-# to let the plugin do stuff on these events please use the section 'listener'
-# if you want to write your own listener, use this plugin as a dependency and listen for 'me.nikl.calendarevents.CalendarEvent'
-#   use event.getLabels() to get a list of the labels of the called event
+# the following events are examples for you to understand how to add custom events with this plugin.
+# They all get registered and called.
+# You can remove or add any event you want, but make sure that the labels (keys) are different.
+# To let the plugin do something on these events, go to the section 'listener'.
+# For more complex action on events, use the API.
+# Please visit www.spigotmc.org/resources/35536/ for more information on the API.
 events:
-  # event called on the first of every month
-  #   as an example: for this event you would check: event.contains("newMonth")
+  # Event called on the first of every month
   newMonth:
     timing:
-      # this will get called on every first of the month
-      #   you can add more dates to the '01' just put a ',' in between
+      # This will get called on every first of the month.
+      # A date with just two numbers is interpreted as any such day in any month.
+      # You can add more dates to the '01' just put a ',' in between (e.g. "01,05,25")
       occasion: "01"
+      # 24h format! Event gets called in the first second of the given minute.
+      # Each day goes from 00:00 to 23:59 ;)
       time: "00:00"
-  # event called on the first of every week
+
+  # Event called on the first of every week
   newWeek:
     timing:
       occasion: "monday"
       time: "00:00"
-  # event called on the first and seventh of every year
-  newYearAndSeventh:
+
+  # Event called on the first and second of every year
+  newYearAndSecond:
     timing:
-      # date without a year gets called every year
-      occasion: "01.01, 07.01"
+      # A date without a year gets called every year
+      occasion: "01.01, 02.01"
       time: "00:00"
+
+  # Event called every day, every two hours
   exampleEvent1:
     timing:
-      # 'every day' basically gets translated to 'monday, tuesday, wednesday, thursday, friday, saturday, sunday'
+      # 'every day' gets translated to 'monday, tuesday, wednesday, thursday, friday, saturday, sunday'
       occasion: "every day"
-      time: "03:00,05:00,07:00,09:00,11:00,13:00,15:00,17:00,19:00,21:00,23:00,01:00"
+      time: "01:00,03:00,05:00,07:00,09:00,11:00,13:00,15:00,17:00,19:00,21:00,23:00"
+
+  # Event called every working/school day, every two hours
   workingDays:
     timing:
       occasion: "monday, tuesday, wednesday, thursday, friday"
-      time: "03:00,05:00,07:00,09:00,11:00,13:00,15:00,17:00,19:00,21:00,23:00,01:00"
-  # event fired on christmas 2022
-  #   for events that get only fired once on a specific date, give the date as dd.mm.yyyy
+      time: "01:00,03:00,05:00,07:00,09:00,11:00,13:00,15:00,17:00,19:00,21:00,23:00"
+
+  # Event fired on christmas 2022
   christmas2022:
     timing:
       occasion: "24.12.2022"
       time: "12:00"
-  everyChristmas:
-    timing:
-      occasion: "24.12"
-      time: "00:00"
 
-# you can listen to CalendarEvent in other plugins. But you can also use the listener included in this plugin
-#   to send commands, messages, broadcasts, titles
+# You can listen to calendar events in other plugins.
+# But you can also use the listener in this plugin for basic actions.
+# For example: send commands, messages, broadcasts, titles
 # use & for colors
 # %time% will be replaced with the events time (24h format hh:mm)
 listener:
   workingDays:
-
-    # %allOnline%    --->  this gets called for every online player once and it will be replaced with the players names
+    # %allOnline%    --->  this gets called for every online player and will be replaced with the player name
     commands:
-    - "tell %allOnline% &4Hey there %allOnline% &1:)"
+    # - "tell %allOnline% &4Hey there %allOnline% &1:)"
 
-    broadcast: "&1Hello everyone. It is now %time%"
+    # broadcast: "&1Hello everyone. It is now %time%."
+    broadcast: "&1Hello everyone. Enjoy the game 😁"
 
     broadcastWithPerm:
       perm: "example.perm"
@@ -68,21 +74,23 @@ listener:
 
     # %player% will be replaced with the players name
     actionbar:
-      # perm is optional. If empty, the actionbar will be send to everyone
-      perm: ""
+      # Permission is optional. If empty, the actionbar will be send to everyone
+      perm: "example.perm"
       bar: "&1That's a cool actionbar, %player% &r(btw: it's %time%)"
 
     # %player% will be replaced with the players name
     title:
       # perm is optional. If empty, the title will be send to everyone
-      perm: ""
+      perm: "example.perm"
       title: "&1Hi there %player%"
       subTitle: "It's now &4%time%&r!"
 
   newYearAndSeventh:
-    broadcast: "Happy new year!!   Or wait... is it already the 7th?"
+    broadcast: "Happy new year!!   Or wait... is it already the 2nd?"
 
 # CalendarEvents is on bStats: https://bstats.org/plugin/bukkit/CalendarEvents
 # If you don't want any anonymous data to be send, you can opt it out here.
 bstats:
+  # Please consider leaving this enabled.
+  # Having statistics helps me to see in which projects I should invest more time.
   disabled: false

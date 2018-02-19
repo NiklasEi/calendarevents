@@ -39,7 +39,7 @@ class EventListener implements Listener {
 
         // checking for null nms later
         if (nms == null)
-            Bukkit.getLogger().log(Level.WARNING, "Your version is not (jet) supported to send Titles or actionbars!");
+            plugin.getLogger().warning("Your version is not (jet) supported for titles or actionbars!");
 
         this.labels = labels;
 
