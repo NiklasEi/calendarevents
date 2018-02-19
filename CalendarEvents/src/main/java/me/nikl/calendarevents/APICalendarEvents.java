@@ -6,16 +6,17 @@ package me.nikl.calendarevents;
  * API of CalendarEvents
  *
  * This API enables you to add events to the EventManager from other plugins.
- * You can listen for these custom events (see: )
+ * You can listen for these custom events (see: https://github.com/NiklasEi/ExampleCalendarEventsAPI)
  */
 public interface APICalendarEvents {
     /**
      * Add a CalendarEvent to the EventManager
      *
      * The event will be automatically scheduled just like the events from the configuration file. The label must be unique.
-     * @param label label of the event
+     *
+     * @param label     label of the event
      * @param occasions the occasions (e.g. 'monday, 02.05.2150' see configuration file of this plugin for more examples)
-     * @param timings the timings (e.g. '14:25, 16:59' see configuration file of this plugin for more examples)
+     * @param timings   the timings (e.g. '14:25, 16:59' see configuration file of this plugin for more examples)
      * @return success in adding the event
      */
     boolean addEvent(String label, String occasions, String timings);
@@ -29,6 +30,7 @@ public interface APICalendarEvents {
 
     /**
      * Check whether a given label is registered as an event.
+     *
      * @param label
      * @return is registered
      */
@@ -36,6 +38,7 @@ public interface APICalendarEvents {
 
     /**
      * Calculate the seconds remaining until the next call of the specified event.
+     *
      * @param label
      * @return seconds to next call, or -1 if no call left / event does not exist
      */

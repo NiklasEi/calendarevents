@@ -8,7 +8,7 @@ import org.bukkit.Bukkit;
 public class NmsFactory {
     private static NMSUtil nmsUtil;
 
-    public static NMSUtil getNmsUtil(){
+    public static NMSUtil getNmsUtil() {
         if (nmsUtil != null) return nmsUtil;
         String version;
         try {
