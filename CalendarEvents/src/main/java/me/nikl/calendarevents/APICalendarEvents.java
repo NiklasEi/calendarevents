@@ -9,7 +9,6 @@ package me.nikl.calendarevents;
  * You can listen for these custom events (see: )
  */
 public interface APICalendarEvents {
-
     /**
      * Add a CalendarEvent to the EventManager
      *
@@ -27,4 +26,18 @@ public interface APICalendarEvents {
      * @param label label of the event to remove
      */
     void removeEvent(String label);
+
+    /**
+     * Check whether a given label is registered as an event.
+     * @param label
+     * @return is registered
+     */
+    boolean isRegisteredEvent(String label);
+
+    /**
+     * Calculate the seconds remaining until the next call of the specified event.
+     * @param label
+     * @return seconds to next call, or -1 if no call left / event does not exist
+     */
+    int secondsToNextCall(String label);
 }

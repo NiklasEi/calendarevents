@@ -422,7 +422,25 @@ class EventsManager implements APICalendarEvents {
 		this.timings.remove(label);
 	}
 
-    int getNumberOfEvents() {
+	@Override
+	public boolean isRegisteredEvent(String label) {
+		return timings.containsKey(label);
+	}
+
+	@Override
+	public int secondsToNextCall(String label) {
+		Timing timing = timings.get(label);
+		if(timing == null) return -1;
+		long nextCall = timing.getNextCall();
+		long currentTimeMillis = System.currentTimeMillis();
+		if(currentTimeMillis > nextCall) {
+			timing.setNextMilli();
+			return secondsToNextCall(label);
+		}
+		return (int)((currentTimeMillis - nextCall)/1000.);
+	}
+
+	int getNumberOfEvents() {
 		return timings.keySet().size();
     }
 
