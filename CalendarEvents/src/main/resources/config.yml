@@ -65,8 +65,7 @@ listener:
     commands:
     # - "tell %allOnline% &4Hey there %allOnline% &1:)"
 
-    # broadcast: "&1Hello everyone. It is now %time%."
-    broadcast: "&1Hello everyone. Enjoy the game 😁"
+    broadcast: "[Server] &1Hello everyone! Enjoy the game :)"
 
     broadcastWithPerm:
       perm: "example.perm"
@@ -85,7 +84,7 @@ listener:
       title: "&1Hi there %player%"
       subTitle: "It's now &4%time%&r!"
 
-  newYearAndSeventh:
+  newYearAndSecond:
     broadcast: "Happy new year!!   Or wait... is it already the 2nd?"
 
 # CalendarEvents is on bStats: https://bstats.org/plugin/bukkit/CalendarEvents

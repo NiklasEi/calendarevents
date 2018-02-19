@@ -1,3 +1,10 @@
+v 1.3.3
+- Default events are less obvious ingame now. Most actions are commented out, or need an example permission.
+- Refined the default configuration
+- Two new methods in API
+  - `boolean isRegisteredEvent(String label)`
+  - `int secondsToNextCall(String label)`
+
 v 1.3.2
 - events registered through the api will not be lost anymore due to a CalendarEvents reload.
 - create and use NmsFactory
