@@ -9,7 +9,7 @@ package me.nikl.calendarevents;
  * You can listen for these custom events.
  * See: https://github.com/NiklasEi/ExampleCalendarEventsAPI
  */
-public interface APICalendarEvents {
+public interface CalendarEventsApi {
     /**
      * Add a CalendarEvent to the EventManager
      *

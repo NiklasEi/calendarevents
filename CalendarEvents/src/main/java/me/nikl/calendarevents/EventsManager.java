@@ -26,18 +26,17 @@ import java.util.logging.Level;
  *
  * Events are called by this class
  */
-class EventsManager implements APICalendarEvents {
-    private Main plugin;
+class EventsManager implements CalendarEventsApi {
+    private CalendarEvents plugin;
     private FileConfiguration config;
     private Map<String, Timing> timings;
     private EventListener eventListener;
 
-    EventsManager(Main plugin) {
+    EventsManager(CalendarEvents plugin) {
         this.plugin = plugin;
         config = plugin.getConfig();
         timings = new HashMap<>();
         loadEventsFromConfig();
-
         this.eventListener = new EventListener(plugin, timings.keySet());
         Bukkit.getServer().getPluginManager().registerEvents(eventListener, plugin);
     }
@@ -45,19 +44,19 @@ class EventsManager implements APICalendarEvents {
     private void loadEventsFromConfig() {
         if (!config.isConfigurationSection("events")) return;
         ConfigurationSection events = config.getConfigurationSection("events");
-        Main.debug("***********************************************************************************");
+        CalendarEvents.debug("***********************************************************************************");
         for (String key : events.getKeys(false)) {
             if (!events.isString(key + ".timing.occasion") || !events.isString(key + ".timing.time")) {
                 Bukkit.getLogger().log(Level.WARNING, "Could not load the event '" + key + "'");
                 Bukkit.getLogger().log(Level.WARNING, "Due to missing occasion or timing.");
                 Bukkit.getLogger().log(Level.WARNING, "...  Skipping the event  ...");
-                Main.debug("***********************************************************************************");
+                CalendarEvents.debug("***********************************************************************************");
                 continue;
             }
             if (timings.containsKey(key)) {
                 Bukkit.getLogger().log(Level.WARNING, "There is already an event with the label '" + key + "'");
                 Bukkit.getLogger().log(Level.WARNING, "...  Skipping the event  ...");
-                Main.debug("***********************************************************************************");
+                CalendarEvents.debug("***********************************************************************************");
                 continue;
             }
             Timing timing = new Timing(key, this);
@@ -73,9 +72,9 @@ class EventsManager implements APICalendarEvents {
             }
 
             // additional debugging inside timing setup
-            Main.debug("Listing loaded dates and times from: " + key);
+            CalendarEvents.debug("Listing loaded dates and times from: " + key);
             timing.setUp();
-            Main.debug("***********************************************************************************");
+            CalendarEvents.debug("***********************************************************************************");
 
             // important: keep setNextMilli behind adding to the Map
             // since setNextMilli can remove it again if all dates are in the past
@@ -222,11 +221,11 @@ class EventsManager implements APICalendarEvents {
 
         occasionString = occasionString.replaceAll(" ", "");
         String[] occasions = occasionString.split(",");
-        Main.debug("occasions: " + Arrays.asList(occasions));
+        CalendarEvents.debug("occasions: " + Arrays.asList(occasions));
 
         singleOccasion:
         for (String singleOccasion : occasions) {
-            Main.debug("singleOccasion: " + singleOccasion);
+            CalendarEvents.debug("singleOccasion: " + singleOccasion);
             if (!singleOccasion.contains(".")) {
                 // month-date or days
                 if (singleOccasion.equalsIgnoreCase("monday") || singleOccasion.equalsIgnoreCase("tuesday") || singleOccasion.equalsIgnoreCase("wednesday") || singleOccasion.equalsIgnoreCase("thursday") || singleOccasion.equalsIgnoreCase("friday") || singleOccasion.equalsIgnoreCase("saturday") || singleOccasion.equalsIgnoreCase("sunday")) {
@@ -261,25 +260,25 @@ class EventsManager implements APICalendarEvents {
                     } catch (Exception e) {
                         Bukkit.getLogger().log(Level.WARNING, "Could not load the dd date '" + singleOccasion + "' in the event '" + label + "'");
                         Bukkit.getLogger().log(Level.WARNING, "...  Skipping the event  ...");
-                        Main.debug("***********************************************************************************");
+                        CalendarEvents.debug("***********************************************************************************");
                         return false;
                     }
                     timing.addMonthlyDate(singleOccasion);
                 } else {
                     Bukkit.getLogger().log(Level.WARNING, "Could not load the dd date or day '" + singleOccasion + "' in the event '" + label + "'");
                     Bukkit.getLogger().log(Level.WARNING, "...  Skipping the event  ...");
-                    Main.debug("***********************************************************************************");
+                    CalendarEvents.debug("***********************************************************************************");
                     return false;
                 }
             } else {
                 String[] dateParts = singleOccasion.split("\\.");
-                Main.debug("dateParts: " + Arrays.asList(dateParts));
+                CalendarEvents.debug("dateParts: " + Arrays.asList(dateParts));
                 if (dateParts.length == 2) {
                     // year-date
                     if (!(dateParts[0].length() == 2 && dateParts[1].length() == 2)) {
                         Bukkit.getLogger().log(Level.WARNING, "Could not load the dd.mm date '" + singleOccasion + "' in the event '" + label + "'");
                         Bukkit.getLogger().log(Level.WARNING, "...  Skipping the event  ...");
-                        Main.debug("***********************************************************************************");
+                        CalendarEvents.debug("***********************************************************************************");
                         return false;
                     }
                     for (String datePart : dateParts) {
@@ -288,7 +287,7 @@ class EventsManager implements APICalendarEvents {
                         } catch (Exception e) {
                             Bukkit.getLogger().log(Level.WARNING, "Could not load the dd.mm date '" + singleOccasion + "' in the event '" + label + "'");
                             Bukkit.getLogger().log(Level.WARNING, "...  Skipping the event  ...");
-                            Main.debug("***********************************************************************************");
+                            CalendarEvents.debug("***********************************************************************************");
                             return false;
                         }
                     }
@@ -299,7 +298,7 @@ class EventsManager implements APICalendarEvents {
                     if (!(dateParts[0].length() == 2 && dateParts[1].length() == 2 && dateParts[2].length() == 4)) {
                         Bukkit.getLogger().log(Level.WARNING, "Could not load the date '" + singleOccasion + "' in the event '" + label + "'");
                         Bukkit.getLogger().log(Level.WARNING, "...  Skipping the event  ...");
-                        Main.debug("***********************************************************************************");
+                        CalendarEvents.debug("***********************************************************************************");
                         return false;
                     }
                     for (String datePart : dateParts) {
@@ -308,7 +307,7 @@ class EventsManager implements APICalendarEvents {
                         } catch (Exception e) {
                             Bukkit.getLogger().log(Level.WARNING, "Could not load the date '" + singleOccasion + "' in the event '" + label + "'");
                             Bukkit.getLogger().log(Level.WARNING, "...  Skipping the event  ...");
-                            Main.debug("***********************************************************************************");
+                            CalendarEvents.debug("***********************************************************************************");
                             return false;
                         }
                     }
@@ -317,7 +316,7 @@ class EventsManager implements APICalendarEvents {
                 } else {
                     Bukkit.getLogger().log(Level.WARNING, "Could not load the general date '" + singleOccasion + "' in the event '" + label + "'");
                     Bukkit.getLogger().log(Level.WARNING, "...  Skipping the event  ...");
-                    Main.debug("***********************************************************************************");
+                    CalendarEvents.debug("***********************************************************************************");
                     return false;
                 }
             }
@@ -329,7 +328,7 @@ class EventsManager implements APICalendarEvents {
         // labels not empty!
         long callMilli = timings.get(labels.get(0)).getNextCall(), current = System.currentTimeMillis();
         if (callMilli > current) {
-            Main.debug("rescheduling " + labels.toString() + " by " + ((callMilli - current) / 50 + 1) + "tics");
+            CalendarEvents.debug("rescheduling " + labels.toString() + " by " + ((callMilli - current) / 50 + 1) + "tics");
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -343,7 +342,7 @@ class EventsManager implements APICalendarEvents {
             }.runTaskLaterAsynchronously(plugin, (callMilli - current) / 50 + 1);
             return;
         }
-        Main.debug("calling " + labels.toString());
+        CalendarEvents.debug("calling " + labels.toString());
         Bukkit.getPluginManager().callEvent(new CalendarEvent(labels));
 
         // before the next timer checks for new events to call in the next minute.
@@ -379,7 +378,7 @@ class EventsManager implements APICalendarEvents {
             }
         }
         if (!toCall.isEmpty()) {
-            Main.debug("scheduling " + toCall.toString() + " for " + ZonedDateTime.ofInstant(Instant.ofEpochMilli(milli), ZoneId.systemDefault()));
+            CalendarEvents.debug("scheduling " + toCall.toString() + " for " + ZonedDateTime.ofInstant(Instant.ofEpochMilli(milli), ZoneId.systemDefault()));
             // this call is already pretty accurate (+- a few tics)
             //   it is made more accurate by a recheck of the timings in callEvent
             new BukkitRunnable() {
@@ -393,7 +392,7 @@ class EventsManager implements APICalendarEvents {
                     }.runTask(plugin);
                 }
             }.runTaskLaterAsynchronously(plugin, diff * 20 + 10);
-            Main.debug("scheduled");
+            CalendarEvents.debug("scheduled");
         }
     }
 
@@ -413,9 +412,9 @@ class EventsManager implements APICalendarEvents {
         if (!loadTimings(timing, label, timings)) {
             return false;
         }
-        Main.debug("Listing loaded dates and times from: " + label);
+        CalendarEvents.debug("Listing loaded dates and times from: " + label);
         timing.setUp();
-        Main.debug("***********************************************************************************");
+        CalendarEvents.debug("***********************************************************************************");
         // important: keep setNextMilli behind adding to the Map
         // since setNextMilli can remove it again if all dates are in the past
         this.timings.put(label, timing);

@@ -18,7 +18,7 @@ import java.io.InputStreamReader;
 /**
  * Main class
  */
-public class Main extends JavaPlugin {
+public class CalendarEvents extends JavaPlugin {
     private static final boolean DEBUG = false;
     private NMSUtil nms;
     private Timer timer;
@@ -89,7 +89,7 @@ public class Main extends JavaPlugin {
      *
      * @return API instance
      */
-    public APICalendarEvents getApi() {
+    public CalendarEventsApi getApi() {
         return this.eventsManager;
     }
 

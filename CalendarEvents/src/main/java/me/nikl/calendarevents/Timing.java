@@ -69,11 +69,11 @@ class Timing {
      * Set up the relevant dates
      */
     public void setUp() {
-        Main.debug("days: " + days.toString());
-        Main.debug("dates: " + dates.toString());
-        Main.debug("monthlyDates: " + monthlyDates.toString());
-        Main.debug("yearlyDates: " + yearlyDates.toString());
-        Main.debug("times: " + times.toString());
+        CalendarEvents.debug("days: " + days.toString());
+        CalendarEvents.debug("dates: " + dates.toString());
+        CalendarEvents.debug("monthlyDates: " + monthlyDates.toString());
+        CalendarEvents.debug("yearlyDates: " + yearlyDates.toString());
+        CalendarEvents.debug("times: " + times.toString());
 
         // get references for current time (need to renew)
         ZonedDateTime now = ZonedDateTime.now();
@@ -144,7 +144,7 @@ class Timing {
                 }
             }
         }
-        Main.debug("loaded " + relevantDates.size() + " days");
+        CalendarEvents.debug("loaded " + relevantDates.size() + " days");
 
         for (ZonedDateTime date : relevantDates) {
             for (String timeString : times) {
@@ -192,12 +192,12 @@ class Timing {
                 }
             }
             if (relevantMillis.isEmpty()) {
-                Main.debug("[CalendarEvents] " + ChatColor.RED + "All events with the label '" + label + "' are in the past!");
+                CalendarEvents.debug("[CalendarEvents] " + ChatColor.RED + "All events with the label '" + label + "' are in the past!");
                 eventsManager.removeEvent(label);
                 return;
             }
         }
-        Main.debug("next date to schedule: " + ZonedDateTime.ofInstant(Instant.ofEpochMilli(toReturn), zone).toString());
+        CalendarEvents.debug("next date to schedule: " + ZonedDateTime.ofInstant(Instant.ofEpochMilli(toReturn), zone).toString());
         nextCall = toReturn;
     }
 

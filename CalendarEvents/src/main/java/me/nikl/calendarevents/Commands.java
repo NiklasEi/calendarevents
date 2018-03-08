@@ -11,9 +11,9 @@ import org.bukkit.command.CommandSender;
  */
 public class Commands implements CommandExecutor {
 
-    private Main plugin;
+    private CalendarEvents plugin;
 
-    public Commands(Main plugin) {
+    public Commands(CalendarEvents plugin) {
         this.plugin = plugin;
     }
 

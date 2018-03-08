@@ -9,9 +9,9 @@ import java.time.ZonedDateTime;
  */
 class Timer extends BukkitRunnable {
     private EventsManager eventsManager;
-    private Main plugin;
+    private CalendarEvents plugin;
 
-    Timer(Main plugin) {
+    Timer(CalendarEvents plugin) {
         this.plugin = plugin;
         this.eventsManager = (EventsManager) plugin.getApi();
 
@@ -36,7 +36,7 @@ class Timer extends BukkitRunnable {
 
     @Override
     public void run() {
-        Main.debug("Timer run");
+        CalendarEvents.debug("Timer run");
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -48,7 +48,7 @@ class Timer extends BukkitRunnable {
         //   tolerance: xx:20 to xx:40
         int sec = ZonedDateTime.now().getSecond();
         if (sec < 20 || sec > 40) {
-            Main.debug("out of tolerance");
+            CalendarEvents.debug("out of tolerance");
             plugin.getNewTimer();
             cancel();
         }

@@ -22,7 +22,7 @@ import java.util.logging.Level;
  * load stuff to do from the config and do whatever was configured on the events
  */
 class EventListener implements Listener {
-    private Main plugin;
+    private CalendarEvents plugin;
     private NMSUtil nms;
     private Map<String, ArrayList<String>> commands;
     private Map<String, String> broadcast;
@@ -33,7 +33,7 @@ class EventListener implements Listener {
     private Set<String> labels;
 
 
-    EventListener(Main plugin, Set<String> labels) {
+    EventListener(CalendarEvents plugin, Set<String> labels) {
         this.plugin = plugin;
         this.nms = NmsFactory.getNmsUtil();
 
@@ -98,8 +98,8 @@ class EventListener implements Listener {
 
     @EventHandler
     public void onCalendarEvent(CalendarEvent event) {
-        Main.debug("[Listener] event called: " + event.getLabels().toString());
-        Main.debug("[Listener] called at: " + event.getTime());
+        CalendarEvents.debug("[Listener] event called: " + event.getLabels().toString());
+        CalendarEvents.debug("[Listener] called at: " + event.getTime());
         // go through all labels in the listener section
         for (String label : event.getLabels()) {
 
