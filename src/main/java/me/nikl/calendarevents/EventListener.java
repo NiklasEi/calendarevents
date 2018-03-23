@@ -155,13 +155,13 @@ class EventListener implements Listener {
                 if (title.perm == null || title.perm.equals("")) {
                     // no permission => send to every player
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        nms.sendTitle(player, titleString.replaceAll("%player%", player.getName()), subTitle.replaceAll("%player%", player.getName()));
+                        nms.sendTitle(player, titleString.replaceAll("%player%", player.getName()), subTitle.replaceAll("%player%", player.getName()), 3);
                     }
                 } else {
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         // check for permission node first
                         if (!player.hasPermission(title.perm)) continue;
-                        nms.sendTitle(player, titleString.replaceAll("%player%", player.getName()), subTitle.replaceAll("%player%", player.getName()));
+                        nms.sendTitle(player, titleString.replaceAll("%player%", player.getName()), subTitle.replaceAll("%player%", player.getName()), 3);
                     }
                 }
             }
