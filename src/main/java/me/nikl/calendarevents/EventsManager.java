@@ -88,7 +88,7 @@ class EventsManager implements CalendarEventsApi {
         HandlerList.unregisterAll(eventListener);
         plugin.reloadConfiguration();
         config = plugin.getConfig();
-        Timing.addHoursToServerTime = config.getLong("settings.addHoursToServerTime", 0);
+        Settings.loadSettingsFromConfig(config);
         timings.clear();
         timings.putAll(apiRegisteredTimings);
         loadEventsFromConfig();

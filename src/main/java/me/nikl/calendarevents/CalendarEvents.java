@@ -36,12 +36,12 @@ public class CalendarEvents extends JavaPlugin {
     @Override
     public void onEnable() {
         reloadConfiguration();
+        Settings.loadSettingsFromConfig(configuration);
         if ((nms = NmsFactory.getNmsUtility()) == null) {
             getLogger().warning(" This plugin is not compatible with your current server version!");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
-        Timing.addHoursToServerTime = configuration.getLong("settings.addHoursToServerTime", 0);
         this.eventsManager = new EventsManager(this);
         this.timer = new Timer(this);
         this.getCommand("calendarevents").setExecutor(new Commands(this));

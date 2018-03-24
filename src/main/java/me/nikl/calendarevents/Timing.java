@@ -16,7 +16,6 @@ import java.util.Set;
  * class to load, store and manage the timings of a CalendarEvent
  */
 class Timing {
-    public static long addHoursToServerTime = 0;
     private long nextCall;
     private String label;
     private EventsManager eventsManager;
@@ -155,7 +154,7 @@ class Timing {
                     // can't happen, is parsed before on load
                     continue;
                 }
-                relevantMillis.add(date.plusHours(hour).plusMinutes(min).minusHours(addHoursToServerTime).toInstant().toEpochMilli());
+                relevantMillis.add(date.plusHours(hour).plusMinutes(min).minusHours(Settings.addHoursToServerTime).toInstant().toEpochMilli());
             }
         }
     }
