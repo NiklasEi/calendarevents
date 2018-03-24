@@ -72,13 +72,16 @@ settings:
 # For example: send commands, messages, broadcasts, titles
 # use & for colors
 # %time% will be replaced with the events time (24h format hh:mm)
+# %day% will be replaced with the name of the day in the locale defined at 'settings.locale'
+# %month% will be replaced with the name of the month in the locale defined at 'settings.locale'
 listener:
   workingDays:
     # %allOnline%    --->  this gets called for every online player and will be replaced with the player name
     commands:
     # - "tell %allOnline% &4Hey there %allOnline% &1:)"
 
-    broadcast: "[Server] &1Hello everyone! Enjoy the game :)"
+    # Broadcast to everyone
+    #broadcast: "[Server] &1Hello everyone! Enjoy the game :)"
 
     broadcastWithPerm:
       perm: "example.perm"
@@ -97,8 +100,8 @@ listener:
       title: "&1Hi there %player%"
       subTitle: "It's now &4%time%&r!"
 
-  newYearAndSecond:
-    broadcast: "Happy new year!!   Or wait... is it already the 2nd?"
+  newMonth:
+    broadcast: "It is now &1%month%"
 
 # CalendarEvents is on bStats: https://bstats.org/plugin/bukkit/CalendarEvents
 # If you don't want any anonymous data to be send, you can opt it out here.

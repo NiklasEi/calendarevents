@@ -108,4 +108,8 @@ public class CalendarEvent extends Event implements Cancellable {
     public void setCancelled(boolean cancel) {
         this.cancelled = cancel;
     }
+
+    public String getDay() {
+        return day;
+    }
 }

@@ -107,10 +107,10 @@ class EventListener implements Listener {
             // check for commands on the event
             if (commands.get(label) != null && !commands.get(label).isEmpty()) {
                 for (String cmd : commands.get(label)) {
-                    cmd = cmd.replaceAll("%time%", event.getTime());
+                    cmd = setEventPlaceholders(cmd, event);
                     if (cmd.contains("%allOnline%")) {
                         for (Player player : Bukkit.getOnlinePlayers()) {
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceAll("%allOnline%", player.getName()).replaceAll("%player%", player.getName()));
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replace("%allOnline%", player.getName()).replace("%player%", player.getName()));
                         }
                     } else {
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
@@ -120,29 +120,29 @@ class EventListener implements Listener {
 
             // check for broadcast
             if (broadcast.get(label) != null) {
-                Bukkit.broadcastMessage(broadcast.get(label).replaceAll("%time%", event.getTime()));
+                Bukkit.broadcastMessage(setEventPlaceholders(broadcast.get(label), event));
             }
 
             // check for broadcast with permission node
             if (broadCastWithPerm.get(label) != null) {
                 BroadcastWithPerm broadcastWithPerm = this.broadCastWithPerm.get(label);
-                Bukkit.broadcast(broadcastWithPerm.message.replaceAll("%time%", event.getTime()), broadcastWithPerm.perm);
+                Bukkit.broadcast(setEventPlaceholders(broadcastWithPerm.message, event), broadcastWithPerm.perm);
             }
 
             // check for actionbar
             if (actionBars.get(label) != null && this.nms != null) {
                 ActionBar actionBar = this.actionBars.get(label);
-                String bar = actionBar.bar.replaceAll("%time%", event.getTime());
+                String bar = setEventPlaceholders(actionBar.bar, event);
                 if (actionBar.perm == null || actionBar.perm.equals("")) {
                     // no permission => send to every player
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        nms.sendActionbar(player, bar.replaceAll("%player%", player.getName()));
+                        nms.sendActionbar(player, bar.replace("%player%", player.getName()));
                     }
                 } else {
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         // check for permission node first
                         if (!player.hasPermission(actionBar.perm)) continue;
-                        nms.sendActionbar(player, bar.replaceAll("%player%", player.getName()));
+                        nms.sendActionbar(player, bar.replace("%player%", player.getName()));
                     }
                 }
             }
@@ -150,22 +150,26 @@ class EventListener implements Listener {
             // check for title
             if (titles.get(label) != null && this.nms != null) {
                 Title title = this.titles.get(label);
-                String titleString = title.title.replaceAll("%time%", event.getTime());
-                String subTitle = title.subTitle.replaceAll("%time%", event.getTime());
+                String titleString = setEventPlaceholders(title.title, event);
+                String subTitle = setEventPlaceholders(title.subTitle, event);
                 if (title.perm == null || title.perm.equals("")) {
                     // no permission => send to every player
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        nms.sendTitle(player, titleString.replaceAll("%player%", player.getName()), subTitle.replaceAll("%player%", player.getName()), 3);
+                        nms.sendTitle(player, titleString.replace("%player%", player.getName()), subTitle.replace("%player%", player.getName()), 3);
                     }
                 } else {
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         // check for permission node first
                         if (!player.hasPermission(title.perm)) continue;
-                        nms.sendTitle(player, titleString.replaceAll("%player%", player.getName()), subTitle.replaceAll("%player%", player.getName()), 3);
+                        nms.sendTitle(player, titleString.replace("%player%", player.getName()), subTitle.replace("%player%", player.getName()), 3);
                     }
                 }
             }
         }
+    }
+
+    private String setEventPlaceholders(String message, CalendarEvent event) {
+        return message.replace("%time%", event.getTime()).replace("%day%", event.getDay()).replace("%month%", event.getMonth());
     }
 
 
