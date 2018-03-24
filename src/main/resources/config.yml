@@ -54,6 +54,16 @@ events:
       occasion: "24.12.2022"
       time: "12:00"
 
+# General Calendar Events settings
+settings:
+  # If your server is in a different timezone then most of your players, you can add hours to the server time here.
+  # Example:
+  #     Server:   UTC +0
+  #     Players:  UTC +1
+  #     configure addHoursToServerTime = 1
+  #     The events above will trigger at the configured times for your UTC +1 players!
+  addHoursToServerTime: 0
+
 # You can listen to calendar events in other plugins.
 # But you can also use the listener in this plugin for basic actions.
 # For example: send commands, messages, broadcasts, titles

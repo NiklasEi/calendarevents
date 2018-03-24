@@ -5,7 +5,9 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 import java.time.ZonedDateTime;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * @author Niklas Eicker
@@ -20,14 +22,16 @@ public class CalendarEvent extends Event implements Cancellable {
     private ArrayList<String> labels;
     private int hour, minute, year;
     private String month;
+    private String day;
 
     public CalendarEvent(ArrayList labels) {
         this.labels = labels;
-        ZonedDateTime now = ZonedDateTime.now();
+        ZonedDateTime now = ZonedDateTime.now().plusHours(Timing.addHoursToServerTime);
         this.minute = now.getSecond() < 20 ? now.getMinute() : (now = now.plusMinutes(1)).getMinute();
         this.hour = now.getHour();
         this.year = now.getYear();
-        this.month = now.getMonth().toString();
+        this.month = now.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+        this.day = now.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
     }
 
     @SuppressWarnings("unused")
