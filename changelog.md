@@ -1,22 +1,29 @@
-v 1.3.3
+
+### v 1.4.0
+- move nms modules into separate project and shade them
+- optional server time offset in config
+- new placeholders in event messages (%day% and %month%)
+- locale setting for day and month names
+
+### v 1.3.3
 - Default events are less obvious ingame now. Most actions are commented out, or need an example permission.
 - Refined the default configuration
 - Two new methods in API
   - `boolean isRegisteredEvent(String label)`
   - `int secondsToNextCall(String label)`
 
-v 1.3.2
+### v 1.3.2
 - events registered through the api will not be lost anymore due to a CalendarEvents reload.
 - create and use NmsFactory
 
-v 1.3.1:
+### v 1.3.1:
 - mavenized the repository
 - fix scheduling bug (happening when a daily event is loaded on a day that comes after the event day...)
 - added CalendarEvents to bStats (can be opt out in config)
 - added missing Prefix in warnings
 
 
-v 1.3.0:
+### v 1.3.0:
 - add support for placeholders in timings
     - 'x' and 'X' will be replaced with every possible number that makes sense in the position. Meaning the 'x' in ``00:x5`` will be replaced by 0, 1, 2, 3, 4 and 5. At the end ``00:x5`` 
     is the same as ``00:05, 00:15, 00:25, 00:35, 00:45, 00:55``
@@ -27,7 +34,7 @@ v 1.3.0:
         will call an event on every full hour and at 11:18
     
     
-v 1.1.0:
+### v 1.1.0:
 - added api to add events on runtime
 - checking for existing events with same label (no overriding)
 - event with only past timings will be removed
