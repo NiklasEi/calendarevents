@@ -30,20 +30,20 @@ class EventListener implements Listener {
     private Map<String, BroadcastWithPerm> broadCastWithPerm;
     private Map<String, ActionBar> actionBars;
     private Map<String, Title> titles;
-
     private Set<String> labels;
-
 
     EventListener(CalendarEvents plugin, Set<String> labels) {
         this.plugin = plugin;
         this.nms = NmsFactory.getNmsUtility();
 
         // checking for null nms later
-        if (nms == null)
-            plugin.getLogger().warning("Your version is not (jet) supported for titles or actionbars!");
-
+        if (nms == null) {
+            plugin.getLogger().warning(" Some functions of this plugin are not supported");
+            plugin.getLogger().warning("      for your server version.");
+            plugin.getLogger().warning(" This includes title and actionbar messages.");
+            plugin.getLogger().warning(" Everything else should function properly.");
+        }
         this.labels = labels;
-
         loadListener();
     }
 
@@ -56,13 +56,9 @@ class EventListener implements Listener {
         this.broadCastWithPerm = new HashMap<>();
         this.actionBars = new HashMap<>();
         this.titles = new HashMap<>();
-
         FileConfiguration config = plugin.getConfig();
-
         if (!config.isConfigurationSection("listener")) return;
-
         ConfigurationSection listener = config.getConfigurationSection("listener");
-
         for (String label : listener.getKeys(false)) {
 
             // check whether the label is a configured event

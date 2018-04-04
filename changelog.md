@@ -1,3 +1,6 @@
+### v 1.4.1
+- plugin will no longer shut down on versions that are not supported by nms utilities
+  - Instead only those functions will not work, that nms utilities are needed for. Those are action bar and title messages.
 
 ### v 1.4.0
 - move nms modules into separate project and shade them

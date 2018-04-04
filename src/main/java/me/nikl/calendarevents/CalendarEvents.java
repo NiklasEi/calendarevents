@@ -22,7 +22,6 @@ import java.io.InputStreamReader;
  */
 public class CalendarEvents extends JavaPlugin {
     private static final boolean DEBUG = false;
-    private NmsUtility nms;
     private Timer timer;
     private EventsManager eventsManager;
     private File configurationFile;
@@ -37,11 +36,6 @@ public class CalendarEvents extends JavaPlugin {
     public void onEnable() {
         reloadConfiguration();
         Settings.loadSettingsFromConfig(configuration);
-        if ((nms = NmsFactory.getNmsUtility()) == null) {
-            getLogger().warning(" This plugin is not compatible with your current server version!");
-            Bukkit.getPluginManager().disablePlugin(this);
-            return;
-        }
         this.eventsManager = new EventsManager(this);
         this.timer = new Timer(this);
         this.getCommand("calendarevents").setExecutor(new Commands(this));
