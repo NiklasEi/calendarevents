@@ -160,8 +160,33 @@ class Timing {
     }
 
     void setNextMilli() {
-        long currentMillis = System.currentTimeMillis(), toReturn = Long.MAX_VALUE;
+        long nextCallTemp = Long.MAX_VALUE, tempMilli;
+        tempMilli = getNextMilli();
+        if (tempMilli < nextCallTemp) {
+            nextCallTemp = tempMilli;
+        }
+        if (relevantMillis.isEmpty()) {
+            relevantDates.clear();
+            relevantMillis.clear();
+            setUp();
+
+            tempMilli = getNextMilli();
+            if (tempMilli < nextCallTemp) {
+                nextCallTemp = tempMilli;
+            }
+            if (relevantMillis.isEmpty()) {
+                CalendarEvents.debug("[CalendarEvents] " + ChatColor.RED + "All events with the label '" + label + "' are in the past!");
+                eventsManager.removeEvent(label);
+                return;
+            }
+        }
+        CalendarEvents.debug("next date to schedule: " + ZonedDateTime.ofInstant(Instant.ofEpochMilli(nextCallTemp), zone).toString());
+        nextCall = nextCallTemp;
+    }
+
+    private long getNextMilli() {
         Iterator<Long> relevantMillisIterator = relevantMillis.iterator();
+        long currentMillis = System.currentTimeMillis(), toReturn = Long.MAX_VALUE;
         while (relevantMillisIterator.hasNext()) {
             Long milli = relevantMillisIterator.next();
             if (currentMillis > milli) {
@@ -172,30 +197,7 @@ class Timing {
                 toReturn = milli;
             }
         }
-        if (relevantMillis.isEmpty()) {
-            relevantDates.clear();
-            relevantMillis.clear();
-            setUp();
-
-            relevantMillisIterator = relevantMillis.iterator();
-            while (relevantMillisIterator.hasNext()) {
-                Long milli = relevantMillisIterator.next();
-                if (currentMillis > milli) {
-                    relevantMillisIterator.remove();
-                    continue;
-                }
-                if (milli < toReturn) {
-                    toReturn = milli;
-                }
-            }
-            if (relevantMillis.isEmpty()) {
-                CalendarEvents.debug("[CalendarEvents] " + ChatColor.RED + "All events with the label '" + label + "' are in the past!");
-                eventsManager.removeEvent(label);
-                return;
-            }
-        }
-        CalendarEvents.debug("next date to schedule: " + ZonedDateTime.ofInstant(Instant.ofEpochMilli(toReturn), zone).toString());
-        nextCall = toReturn;
+        return toReturn;
     }
 
     long getNextCall() {
