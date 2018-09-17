@@ -1,7 +1,7 @@
 name: CalendarEvents
 author: Nikl
 main: me.nikl.calendarevents.CalendarEvents
-version: 1.4.1
+version: 1.4.2
 website: nikl.me
 
 commands:
