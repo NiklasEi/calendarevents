@@ -38,10 +38,11 @@ class EventListener implements Listener {
 
         // checking for null nms later
         if (nms == null) {
-            plugin.getLogger().warning(" Some functions of this plugin are not supported");
-            plugin.getLogger().warning("      for your server version.");
-            plugin.getLogger().warning(" This includes title and actionbar messages.");
-            plugin.getLogger().warning(" Everything else should function properly.");
+            plugin.getLogger().warning(" The following functions of this plugin are");
+            plugin.getLogger().warning("      not supported for your server version:");
+            plugin.getLogger().warning(" - Title messages");
+            plugin.getLogger().warning(" - Actionbar messages");
+            plugin.getLogger().warning(" Everything else will still function properly!");
         }
         this.labels = labels;
         loadListener();

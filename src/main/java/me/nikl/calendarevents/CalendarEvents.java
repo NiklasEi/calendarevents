@@ -1,8 +1,6 @@
 package me.nikl.calendarevents;
 
 import com.google.common.base.Charsets;
-import me.nikl.nmsutilities.NmsUtility;
-import me.nikl.nmsutilities.NmsFactory;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
