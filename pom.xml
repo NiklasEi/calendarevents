@@ -18,6 +18,11 @@
         </repository>
     </distributionManagement>
 
+    <scm>
+        <url>https://github.com/NiklasEi/calendarevents</url>
+        <connection>git@github.com:NiklasEi/calendarevents.git</connection>
+    </scm>
+
     <build>
         <defaultGoal>clean package</defaultGoal>
         <finalName>${project.name}</finalName>
