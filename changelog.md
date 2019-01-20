@@ -1,3 +1,5 @@
+- add commands with permission action (closes #6)
+
 ### v 1.4.2
 - compatibility with MC 1.13 and 1.13.1
 
