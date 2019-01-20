@@ -12,6 +12,7 @@ import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -26,6 +27,7 @@ class EventListener implements Listener {
     private CalendarEvents plugin;
     private NmsUtility nms;
     private Map<String, ArrayList<String>> commands;
+    private Map<String, List<CommandAction>> commandsWithPerm;
     private Map<String, String> broadcast;
     private Map<String, BroadcastWithPerm> broadCastWithPerm;
     private Map<String, ActionBar> actionBars;
@@ -53,6 +55,7 @@ class EventListener implements Listener {
      */
     private void loadListener() {
         this.commands = new HashMap<>();
+        this.commandsWithPerm = new HashMap<>();
         this.broadcast = new HashMap<>();
         this.broadCastWithPerm = new HashMap<>();
         this.actionBars = new HashMap<>();
@@ -67,6 +70,7 @@ class EventListener implements Listener {
                 Bukkit.getLogger().log(Level.WARNING, "[CalendarEvents] " + "Section 'listener' contains actions for a not scheduled event: " + label);
                 continue;
             }
+
             if (listener.isList(label + ".commands")) {
                 ArrayList<String> commands = new ArrayList<>(listener.getStringList(label + ".commands"));
                 for (int i = 0; i < commands.size(); i++) {
@@ -74,6 +78,18 @@ class EventListener implements Listener {
                 }
                 this.commands.put(label, commands);
             }
+
+            if (listener.isConfigurationSection(label + ".commandsWithPerm")) {
+                ConfigurationSection commandWithPerm = listener.getConfigurationSection(label + ".commandsWithPerm");
+                for (String command : commandWithPerm.getKeys(false)) {
+                    if (!commandWithPerm.isConfigurationSection(command)) continue;
+                    if (!commandWithPerm.isList(command + ".commands")) continue;
+                    if (!commandWithPerm.isString(command + ".perm")) continue;
+                    this.commandsWithPerm.putIfAbsent(label, new ArrayList<>());
+                    this.commandsWithPerm.get(label).add(new CommandAction(commandWithPerm.getString(command + ".perm"), commandWithPerm.getStringList(command + ".commands")));
+                }
+            }
+
             if (listener.isString(label + ".broadcast")) {
                 broadcast.put(label, ChatColor.translateAlternateColorCodes('&', listener.getString(label + ".broadcast")));
             }
@@ -89,10 +105,8 @@ class EventListener implements Listener {
             if (listener.isConfigurationSection(label + ".title") && listener.isString(label + ".title" + ".title") && listener.isString(label + ".title" + ".subTitle")) {
                 titles.put(label, new Title(listener.getString(label + ".title" + ".perm"), ChatColor.translateAlternateColorCodes('&', listener.getString(label + ".title" + ".title")), ChatColor.translateAlternateColorCodes('&', listener.getString(label + ".title" + ".subTitle"))));
             }
-
         }
     }
-
 
     @EventHandler
     public void onCalendarEvent(CalendarEvent event) {
@@ -111,6 +125,21 @@ class EventListener implements Listener {
                         }
                     } else {
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
+                    }
+                }
+            }
+
+            // check for commands with permissions
+            if (commandsWithPerm.get(label) != null && !commandsWithPerm.get(label).isEmpty()) {
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    for (CommandAction commandAction : commandsWithPerm.get(label)) {
+                        if (!player.hasPermission(commandAction.perm)) continue;
+                        for (String cmd : commandAction.commands) {
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd
+                                    .replace("%allOnline%", player.getName())
+                                    .replace("%player%", player.getName())
+                                    .replace("%perm%", commandAction.perm));
+                        }
                     }
                 }
             }
@@ -204,6 +233,19 @@ class EventListener implements Listener {
             this.perm = perm;
             this.title = title;
             this.subTitle = subTitle;
+        }
+    }
+
+    /**
+     * Store CommandWithPerm info
+     */
+    private class CommandAction {
+        String perm;
+        List<String> commands;
+
+        private CommandAction(String perm, List<String> commands) {
+            this.perm = perm;
+            this.commands = commands;
         }
     }
 }

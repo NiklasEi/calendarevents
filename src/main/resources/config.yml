@@ -1,8 +1,8 @@
-# ----------------------------------------------------------------------------#
-#                                                                             #
-#                          Calender Events config                             #
-#                                                                             #
-# ----------------------------------------------------------------------------#
+# ---------------------------------------------------------------------------- #
+#                                                                              #
+#                          Calender Events config                              #
+#                                                                              #
+# ---------------------------------------------------------------------------- #
 
 # the following events are examples for you to understand how to add custom events with this plugin.
 # They all get registered and called.
@@ -79,6 +79,19 @@ listener:
     # %allOnline%    --->  this gets called for every online player and will be replaced with the player name
     commands:
     # - "tell %allOnline% &4Hey there %allOnline% &1:)"
+
+    # all commands in this section will run for EVERY player that has the given permission
+    commandsWithPerm:
+      # for every unique key commands and perm have to be defined
+      example:
+        # list of commands.
+        #     %player% is replaced by the player name
+        #     %allOnline% is replaced by the player name
+        #     %perm% is replaced by the permission
+        commands:
+          - "tell %player% &4Hey there %player% &1You have the permission %perm%"
+        # the commands above are only dispatched for the player, if he has the defined permission
+        perm: "example.perm"
 
     # Broadcast to everyone
     #broadcast: "[Server] &1Hello everyone! Enjoy the game :)"
