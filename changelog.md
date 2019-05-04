@@ -1,4 +1,6 @@
+### v 1.5.0
 - add commands with permission action (closes #6)
+- make the ticks that a title is visible configurable
 
 ### v 1.4.2
 - compatibility with MC 1.13 and 1.13.1
@@ -30,7 +32,6 @@
 - added CalendarEvents to bStats (can be opt out in config)
 - added missing Prefix in warnings
 
-
 ### v 1.3.0:
 - add support for placeholders in timings
     - 'x' and 'X' will be replaced with every possible number that makes sense in the position. Meaning the 'x' in ``00:x5`` will be replaced by 0, 1, 2, 3, 4 and 5. At the end ``00:x5`` 
@@ -40,7 +41,6 @@
         ``time: "xx:00, 11:18"``
     
         will call an event on every full hour and at 11:18
-    
     
 ### v 1.1.0:
 - added api to add events on runtime
