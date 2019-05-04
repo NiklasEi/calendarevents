@@ -103,7 +103,13 @@ class EventListener implements Listener {
             }
 
             if (listener.isConfigurationSection(label + ".title") && listener.isString(label + ".title" + ".title") && listener.isString(label + ".title" + ".subTitle")) {
-                titles.put(label, new Title(listener.getString(label + ".title" + ".perm"), ChatColor.translateAlternateColorCodes('&', listener.getString(label + ".title" + ".title")), ChatColor.translateAlternateColorCodes('&', listener.getString(label + ".title" + ".subTitle"))));
+                titles.put(label,
+                        new Title(
+                                listener.getString(label + ".title" + ".perm"),
+                                ChatColor.translateAlternateColorCodes('&', listener.getString(label + ".title" + ".title")),
+                                ChatColor.translateAlternateColorCodes('&', listener.getString(label + ".title" + ".subTitle"))
+                        ).setTicksToDisplay(listener.getInt(label + ".title" + ".ticksToDisplay", 10))
+                );
             }
         }
     }
@@ -181,13 +187,13 @@ class EventListener implements Listener {
                 if (title.perm == null || title.perm.equals("")) {
                     // no permission => send to every player
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        nms.sendTitle(player, titleString.replace("%player%", player.getName()), subTitle.replace("%player%", player.getName()), 3);
+                        nms.sendTitle(player, titleString.replace("%player%", player.getName()), subTitle.replace("%player%", player.getName()), title.ticksToDisplay);
                     }
                 } else {
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         // check for permission node first
                         if (!player.hasPermission(title.perm)) continue;
-                        nms.sendTitle(player, titleString.replace("%player%", player.getName()), subTitle.replace("%player%", player.getName()), 3);
+                        nms.sendTitle(player, titleString.replace("%player%", player.getName()), subTitle.replace("%player%", player.getName()), title.ticksToDisplay);
                     }
                 }
             }
@@ -228,11 +234,18 @@ class EventListener implements Listener {
      */
     private class Title {
         String perm, title, subTitle;
+        int ticksToDisplay;
 
         private Title(String perm, String title, String subTitle) {
             this.perm = perm;
             this.title = title;
             this.subTitle = subTitle;
+        }
+
+        private Title setTicksToDisplay(int ticksToDisplay) {
+            if (ticksToDisplay < 1) ticksToDisplay = 1;
+            this.ticksToDisplay = ticksToDisplay;
+            return this;
         }
     }
 

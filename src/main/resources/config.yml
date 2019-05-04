@@ -112,6 +112,8 @@ listener:
       perm: "example.perm"
       title: "&1Hi there %player%"
       subTitle: "It's now &4%time%&r!"
+      # ticks (20 = 1s) the title is visible (default 10). 10 ticks fading-in and 10 ticks fading-out are hardcoded!
+      ticksToDisplay: 20
 
   newMonth:
     broadcast: "It is now &1%month%"
