@@ -1,3 +1,6 @@
+### v 1.6.0
+- support minecraft 1.14
+
 ### v 1.5.0
 - add commands with permission action (closes #6)
 - make the ticks that a title is visible configurable
