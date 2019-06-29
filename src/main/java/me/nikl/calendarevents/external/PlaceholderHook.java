@@ -2,10 +2,7 @@ package me.nikl.calendarevents.external;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.nikl.calendarevents.CalendarEvents;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-
-import java.util.logging.Level;
 
 public class PlaceholderHook {
 
@@ -47,14 +44,10 @@ public class PlaceholderHook {
 
         @Override
         public String onPlaceholderRequest(Player player, String identifier){
-            Bukkit.getLogger().log(Level.INFO, "Resolving: " + identifier);
-
             String[] ids = identifier.split(":");
             switch (ids[0].toLowerCase()) {
                 case "until":
                     if (ids.length < 2 || ids[1].isEmpty()) return null;
-                    Bukkit.getLogger().log(Level.INFO, "Getting: " + ids[1]);
-                    Bukkit.getLogger().log(Level.INFO, "  ->  " + plugin.getApi().secondsToNextCall(ids[1]));
                     int seconds = plugin.getApi().secondsToNextCall(ids[1]);
                     if (seconds < 0) return "never";
                     int days = seconds / (3600*24);
