@@ -1,3 +1,6 @@
+### v 1.7.0
+- provide placeholders to display the time till next call via PlaceholderAPI
+
 ### v 1.6.0
 - support minecraft 1.14
 
