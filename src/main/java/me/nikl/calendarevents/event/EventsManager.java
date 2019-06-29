@@ -445,7 +445,7 @@ public class EventsManager implements CalendarEventsApi {
             timing.setNextMilli();
             return secondsToNextCall(label);
         }
-        return (int) ((currentTimeMillis - nextCall) / 1000.);
+        return (int) ((nextCall - currentTimeMillis) / 1000.);
     }
 
     public int getNumberOfEvents() {
