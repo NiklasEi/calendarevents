@@ -1,7 +1,7 @@
 package me.nikl.calendarevents.scheduling;
 
 import me.nikl.calendarevents.CalendarEvents;
-import me.nikl.calendarevents.event.EventsManager;
+import me.nikl.calendarevents.EventsManager;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.time.ZonedDateTime;

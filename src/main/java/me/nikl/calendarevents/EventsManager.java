@@ -1,6 +1,5 @@
-package me.nikl.calendarevents.event;
+package me.nikl.calendarevents;
 
-import me.nikl.calendarevents.*;
 import me.nikl.calendarevents.scheduling.Timing;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;

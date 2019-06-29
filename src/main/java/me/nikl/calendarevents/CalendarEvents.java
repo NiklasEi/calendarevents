@@ -1,7 +1,6 @@
 package me.nikl.calendarevents;
 
 import com.google.common.base.Charsets;
-import me.nikl.calendarevents.event.EventsManager;
 import me.nikl.calendarevents.external.PlaceholderHook;
 import me.nikl.calendarevents.scheduling.Timer;
 import org.bstats.bukkit.Metrics;

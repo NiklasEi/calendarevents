@@ -1,6 +1,5 @@
 package me.nikl.calendarevents;
 
-import me.nikl.calendarevents.event.CalendarEvent;
 import me.nikl.nmsutilities.NmsUtility;
 import me.nikl.nmsutilities.NmsFactory;
 import org.bukkit.Bukkit;

@@ -1,6 +1,5 @@
-package me.nikl.calendarevents.event;
+package me.nikl.calendarevents;
 
-import me.nikl.calendarevents.Settings;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

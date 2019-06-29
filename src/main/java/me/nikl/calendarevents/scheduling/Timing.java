@@ -2,7 +2,7 @@ package me.nikl.calendarevents.scheduling;
 
 import me.nikl.calendarevents.CalendarEvents;
 import me.nikl.calendarevents.Settings;
-import me.nikl.calendarevents.event.EventsManager;
+import me.nikl.calendarevents.EventsManager;
 import org.bukkit.ChatColor;
 
 import java.time.Instant;
