@@ -1,6 +1,5 @@
 package me.nikl.calendarevents.external;
 
-import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.nikl.calendarevents.CalendarEvents;
 import org.bukkit.Bukkit;
@@ -12,10 +11,6 @@ public class PlaceholderHook {
 
     public PlaceholderHook(CalendarEvents instance) {
         new CalendarEventsExpansion(instance).register();
-        Bukkit.getLogger().log(Level.INFO, PlaceholderAPI.setPlaceholders(null, "%calendarevents_until:newYearAndSecond%"));
-        Bukkit.getLogger().log(Level.INFO, PlaceholderAPI.setPlaceholders(null, "%calendarevents_until:exampleEvent1%"));
-        Bukkit.getLogger().log(Level.INFO, PlaceholderAPI.setPlaceholders(null, "%calendarevents_until:workingDays%"));
-        Bukkit.getLogger().log(Level.INFO, PlaceholderAPI.setPlaceholders(null, "%calendarevents_until:christmas2022%"));
     }
 
     class CalendarEventsExpansion extends PlaceholderExpansion {
