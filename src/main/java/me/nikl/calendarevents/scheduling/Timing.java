@@ -1,5 +1,8 @@
-package me.nikl.calendarevents;
+package me.nikl.calendarevents.scheduling;
 
+import me.nikl.calendarevents.CalendarEvents;
+import me.nikl.calendarevents.Settings;
+import me.nikl.calendarevents.event.EventsManager;
 import org.bukkit.ChatColor;
 
 import java.time.Instant;
@@ -15,7 +18,7 @@ import java.util.Set;
  *
  * class to load, store and manage the timings of a CalendarEvent
  */
-class Timing {
+public class Timing {
     private long nextCall;
     private String label;
     private EventsManager eventsManager;
@@ -28,7 +31,7 @@ class Timing {
     private Set<ZonedDateTime> relevantDates;
     private ZoneId zone;
 
-    Timing(String label, EventsManager eventsManager) {
+    public Timing(String label, EventsManager eventsManager) {
         this.label = label;
         this.eventsManager = eventsManager;
 
@@ -42,23 +45,23 @@ class Timing {
         relevantMillis = new HashSet<>();
     }
 
-    void addDay(Integer day) {
+    public void addDay(Integer day) {
         days.add(day);
     }
 
-    void addTime(String time) {
+    public void addTime(String time) {
         times.add(time);
     }
 
-    void addDate(String date) {
+    public void addDate(String date) {
         dates.add(date);
     }
 
-    void addMonthlyDate(String date) {
+    public void addMonthlyDate(String date) {
         monthlyDates.add(date);
     }
 
-    void addYearlyDate(String date) {
+    public void addYearlyDate(String date) {
         yearlyDates.add(date);
     }
 
@@ -159,7 +162,7 @@ class Timing {
         }
     }
 
-    void setNextMilli() {
+    public void setNextMilli() {
         long nextCallTemp = Long.MAX_VALUE, tempMilli;
         tempMilli = getNextMilli();
         if (tempMilli < nextCallTemp) {
@@ -200,7 +203,7 @@ class Timing {
         return toReturn;
     }
 
-    long getNextCall() {
+    public long getNextCall() {
         return this.nextCall;
     }
 }

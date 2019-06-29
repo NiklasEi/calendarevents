@@ -1,5 +1,7 @@
-package me.nikl.calendarevents;
+package me.nikl.calendarevents.scheduling;
 
+import me.nikl.calendarevents.CalendarEvents;
+import me.nikl.calendarevents.event.EventsManager;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.time.ZonedDateTime;
@@ -7,11 +9,11 @@ import java.time.ZonedDateTime;
 /**
  * @author Niklas Eicker
  */
-class Timer extends BukkitRunnable {
+public class Timer extends BukkitRunnable {
     private EventsManager eventsManager;
     private CalendarEvents plugin;
 
-    Timer(CalendarEvents plugin) {
+    public Timer(CalendarEvents plugin) {
         this.plugin = plugin;
         this.eventsManager = (EventsManager) plugin.getApi();
 

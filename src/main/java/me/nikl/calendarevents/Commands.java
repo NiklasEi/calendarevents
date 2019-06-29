@@ -33,8 +33,6 @@ public class Commands implements CommandExecutor {
                 plugin.reload();
                 sender.sendMessage("[CalendarEvents] CalendarEvents was successfully reloaded");
                 return true;
-
-
         }
         sender.sendMessage("[CalendarEvents] There is no such command!");
         return true;

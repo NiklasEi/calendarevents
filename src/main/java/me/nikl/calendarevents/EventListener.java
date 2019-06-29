@@ -1,5 +1,6 @@
 package me.nikl.calendarevents;
 
+import me.nikl.calendarevents.event.CalendarEvent;
 import me.nikl.nmsutilities.NmsUtility;
 import me.nikl.nmsutilities.NmsFactory;
 import org.bukkit.Bukkit;
@@ -23,7 +24,7 @@ import java.util.logging.Level;
  * Plugin intern listener for the event CalendarEvent
  * load stuff to do from the config and do whatever was configured on the events
  */
-class EventListener implements Listener {
+public class EventListener implements Listener {
     private CalendarEvents plugin;
     private NmsUtility nms;
     private Map<String, ArrayList<String>> commands;
@@ -34,7 +35,7 @@ class EventListener implements Listener {
     private Map<String, Title> titles;
     private Set<String> labels;
 
-    EventListener(CalendarEvents plugin, Set<String> labels) {
+    public EventListener(CalendarEvents plugin, Set<String> labels) {
         this.plugin = plugin;
         this.nms = NmsFactory.getNmsUtility();
 

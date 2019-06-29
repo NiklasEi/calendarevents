@@ -1,6 +1,8 @@
 package me.nikl.calendarevents;
 
 import com.google.common.base.Charsets;
+import me.nikl.calendarevents.event.EventsManager;
+import me.nikl.calendarevents.scheduling.Timer;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -26,7 +28,7 @@ public class CalendarEvents extends JavaPlugin {
     private FileConfiguration configuration;
     private Metrics metrics;
 
-    static void debug(String message) {
+    public static void debug(String message) {
         if (DEBUG) Bukkit.getLogger().info(message);
     }
 
@@ -57,7 +59,7 @@ public class CalendarEvents extends JavaPlugin {
         if (this.timer != null) this.timer.cancel();
     }
 
-    void reloadConfiguration() {
+    public void reloadConfiguration() {
         this.configurationFile = new File(this.getDataFolder().toString() + File.separatorChar + "config.yml");
         if (!configurationFile.exists()) {
             this.saveResource("config.yml", false);
@@ -75,7 +77,7 @@ public class CalendarEvents extends JavaPlugin {
         getNewTimer();
     }
 
-    void getNewTimer() {
+    public void getNewTimer() {
         this.timer = new Timer(this);
     }
 

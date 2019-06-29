@@ -1,5 +1,7 @@
-package me.nikl.calendarevents;
+package me.nikl.calendarevents.event;
 
+import me.nikl.calendarevents.*;
+import me.nikl.calendarevents.scheduling.Timing;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -26,13 +28,13 @@ import java.util.logging.Level;
  *
  * Events are called by this class
  */
-class EventsManager implements CalendarEventsApi {
+public class EventsManager implements CalendarEventsApi {
     private CalendarEvents plugin;
     private FileConfiguration config;
     private Map<String, Timing> timings;
     private EventListener eventListener;
 
-    EventsManager(CalendarEvents plugin) {
+    public EventsManager(CalendarEvents plugin) {
         this.plugin = plugin;
         config = plugin.getConfig();
         timings = new HashMap<>();
@@ -364,7 +366,7 @@ class EventsManager implements CalendarEventsApi {
         }.runTaskLaterAsynchronously(plugin, 100);
     }
 
-    void callNextMinute() {
+    public void callNextMinute() {
         ArrayList<String> toCall = new ArrayList<>();
         long currentMillis = System.currentTimeMillis(), milli = 0;
         long diff = 0;
@@ -397,7 +399,7 @@ class EventsManager implements CalendarEventsApi {
         }
     }
 
-    void reCalcNextMillis() {
+    public void reCalcNextMillis() {
         timings.values().forEach(Timing::setNextMilli);
     }
 
@@ -446,7 +448,7 @@ class EventsManager implements CalendarEventsApi {
         return (int) ((currentTimeMillis - nextCall) / 1000.);
     }
 
-    int getNumberOfEvents() {
+    public int getNumberOfEvents() {
         return timings.keySet().size();
     }
 
