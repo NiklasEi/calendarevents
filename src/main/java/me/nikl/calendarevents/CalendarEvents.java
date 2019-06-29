@@ -2,6 +2,7 @@ package me.nikl.calendarevents;
 
 import com.google.common.base.Charsets;
 import me.nikl.calendarevents.event.EventsManager;
+import me.nikl.calendarevents.external.PlaceholderHook;
 import me.nikl.calendarevents.scheduling.Timer;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -40,6 +41,9 @@ public class CalendarEvents extends JavaPlugin {
         this.timer = new Timer(this);
         this.getCommand("calendarevents").setExecutor(new Commands(this));
         setUpMetrics();
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new PlaceholderHook(this);
+        }
     }
 
     private void setUpMetrics() {

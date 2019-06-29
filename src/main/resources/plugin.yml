@@ -4,6 +4,8 @@ main: me.nikl.calendarevents.CalendarEvents
 version: 1.6.0
 website: nikl.me
 
+softdepend: [PlaceholderAPI]
+
 commands:
   calendarevents:
     description: main command
