@@ -1,3 +1,8 @@
+### v 1.8.0
+- NEW FEATURE: Combined events
+  - allow events to fire when a specified list of other events was fired
+  - this allows special scheduling like e.g. "first/second/third" sunday of a month
+
 ### v 1.7.0
 - provide placeholders to display the time till next call via PlaceholderAPI
 

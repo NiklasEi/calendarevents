@@ -31,14 +31,18 @@ public class EventsManager implements CalendarEventsApi {
     private CalendarEvents plugin;
     private FileConfiguration config;
     private Map<String, Timing> timings;
+    private Map<String, CombinedEvent> combinedEvents;
     private EventListener eventListener;
 
     public EventsManager(CalendarEvents plugin) {
         this.plugin = plugin;
         config = plugin.getConfig();
         timings = new HashMap<>();
+        combinedEvents = new HashMap<>();
         loadEventsFromConfig();
-        this.eventListener = new EventListener(plugin, timings.keySet());
+        HashSet<String> allLables = new HashSet<String>(timings.keySet());
+        allLables.addAll(combinedEvents.keySet());
+        this.eventListener = new EventListener(plugin, allLables);
         Bukkit.getServer().getPluginManager().registerEvents(eventListener, plugin);
     }
 
@@ -47,15 +51,19 @@ public class EventsManager implements CalendarEventsApi {
         ConfigurationSection events = config.getConfigurationSection("events");
         CalendarEvents.debug("***********************************************************************************");
         for (String key : events.getKeys(false)) {
-            if (!events.isString(key + ".timing.occasion") || !events.isString(key + ".timing.time")) {
-                Bukkit.getLogger().log(Level.WARNING, "Could not load the event '" + key + "'");
-                Bukkit.getLogger().log(Level.WARNING, "Due to missing occasion or timing.");
+            if (timings.containsKey(key) || this.combinedEvents.containsKey(key)) {
+                Bukkit.getLogger().log(Level.WARNING, "There is already an event with the label '" + key + "'");
                 Bukkit.getLogger().log(Level.WARNING, "...  Skipping the event  ...");
                 CalendarEvents.debug("***********************************************************************************");
                 continue;
             }
-            if (timings.containsKey(key)) {
-                Bukkit.getLogger().log(Level.WARNING, "There is already an event with the label '" + key + "'");
+            if(events.isList(key + ".events")) {
+                this.combinedEvents.put(key, new CombinedEvent(key, events.getStringList(key + ".events")));
+                continue;
+            }
+            if (!events.isString(key + ".timing.occasion") || !events.isString(key + ".timing.time")) {
+                Bukkit.getLogger().log(Level.WARNING, "Could not load the event '" + key + "'");
+                Bukkit.getLogger().log(Level.WARNING, "Due to missing occasion or timing.");
                 Bukkit.getLogger().log(Level.WARNING, "...  Skipping the event  ...");
                 CalendarEvents.debug("***********************************************************************************");
                 continue;
@@ -81,6 +89,19 @@ public class EventsManager implements CalendarEventsApi {
             // since setNextMilli can remove it again if all dates are in the past
             timings.put(key, timing);
             timing.setNextMilli();
+        }
+        // check wether all events used in combined events are valid
+        for (CombinedEvent event : new HashMap<String, CombinedEvent>(this.combinedEvents).values()) {
+            for (String childEvent : event.getChildEvents()) {
+                if(!this.timings.containsKey(childEvent)) {
+                    this.combinedEvents.remove(event.getLable());
+                    Bukkit.getLogger().log(Level.WARNING, "The combined event '" + event.getLable() + "'");
+                    Bukkit.getLogger().log(Level.WARNING, "   contains unknown child event: ''" + childEvent + "'");
+                    Bukkit.getLogger().log(Level.WARNING, "...  Skipping the event  ...");
+                    CalendarEvents.debug("***********************************************************************************");
+                    break;
+                }
+            }
         }
     }
 
@@ -356,6 +377,8 @@ public class EventsManager implements CalendarEventsApi {
                     @Override
                     public void run() {
                         for (String label : labels) {
+                            // we only have to update timings (not combined events)
+                            if(!timings.containsKey(label)) continue;
                             Timing timing = timings.get(label);
                             timing.setNextMilli();
                         }
@@ -380,6 +403,10 @@ public class EventsManager implements CalendarEventsApi {
             }
         }
         if (!toCall.isEmpty()) {
+            // add combined events to toCall
+            for (String combinedEventLable : this.combinedEvents.keySet()) {
+                if (this.combinedEvents.get(combinedEventLable).isCalled(toCall)) toCall.add(combinedEventLable);
+            }
             CalendarEvents.debug("scheduling " + toCall.toString() + " for " + ZonedDateTime.ofInstant(Instant.ofEpochMilli(milli), ZoneId.systemDefault()));
             // this call is already pretty accurate (+- a few tics)
             //   it is made more accurate by a recheck of the timings in callEvent

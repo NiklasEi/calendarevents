@@ -54,6 +54,27 @@ events:
       occasion: "24.12.2022"
       time: "12:00"
 
+  # COMBINED EVENTS
+  #  combined events can be used to create special scheduling like e.g. every first sunday of a month
+  #  combined events contain a list of "normal" calendar event labels and are only fired when ALL of the listed events are fired
+  
+  # lets create some normal events to use in a combined event
+  sunday: # every sunday
+    timing:
+      occasion: "sunday"
+      time: "12:00" # SAME TIME AS THE OTHER EVENT BELOW (IMPORTANT)
+  firstWeekOfMonth: # every day of the first week in a month
+    timing:
+      occasion: "01, 02, 03, 04, 05, 06, 07"
+      time: "12:00"
+
+  # this event will fire on every first sunday in a month at 12:00
+  firstSundayInMonth:
+    events: # lables of the two "normal" events above
+      - "sunday"
+      - "firstWeekOfMonth"
+
+
 # General Calendar Events settings
 settings:
   # If your server is in a different timezone then most of your players, you can add hours to the server time here.

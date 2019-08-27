@@ -8,7 +8,7 @@
     <artifactId>calendarevents</artifactId>
     <name>CalendarEvents</name>
     <packaging>jar</packaging>
-    <version>1.7.0</version>
+    <version>1.8.0</version>
     <description>Custom events fired on specific dates and times</description>
 
     <distributionManagement>
