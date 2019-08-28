@@ -251,31 +251,10 @@ public class EventsManager implements CalendarEventsApi {
             CalendarEvents.debug("singleOccasion: " + singleOccasion);
             if (!singleOccasion.contains(".")) {
                 // month-date or days
-                if (singleOccasion.equalsIgnoreCase("monday") || singleOccasion.equalsIgnoreCase("tuesday") || singleOccasion.equalsIgnoreCase("wednesday") || singleOccasion.equalsIgnoreCase("thursday") || singleOccasion.equalsIgnoreCase("friday") || singleOccasion.equalsIgnoreCase("saturday") || singleOccasion.equalsIgnoreCase("sunday")) {
-                    switch (singleOccasion.toLowerCase()) {
-                        case "monday":
-                            timing.addDay(1);
-                            break;
-                        case "tuesday":
-                            timing.addDay(2);
-                            break;
-                        case "wednesday":
-                            timing.addDay(3);
-                            break;
-                        case "thursday":
-                            timing.addDay(4);
-                            break;
-                        case "friday":
-                            timing.addDay(5);
-                            break;
-                        case "saturday":
-                            timing.addDay(6);
-                            break;
-                        case "sunday":
-                            timing.addDay(7);
-                            break;
-                    }
-                    continue singleOccasion;
+                Day singleDay = Day.valueOf(singleOcassion);
+                if (singleDay != Day.NONE){
+                    timing.addDay(singleDay.getDayNumber());
+                }
 
                 } else if (singleOccasion.length() == 2) {
                     try {
@@ -487,3 +466,25 @@ public class EventsManager implements CalendarEventsApi {
         return toReturn;
     }
 }
+
+enum Day {
+    MONDAY(1),TUESDAY(2),WEDNESDAY(3),THURSDAY(4),FRIDAY(5),SATURDAY(6),SUNDAY(7),NONE(0);
+    
+    private int dayNumber;
+    Day(int dayNumber){ this.dayNumber = dayNumber;}
+
+    public int getDayNumber(){ return dayNumber;}
+
+    @Override
+    public String toString(){
+      return this.name().toLowerCase();
+    }
+    public static Day valueOfString(String day){
+      Day result = Day.NONE;
+      for(Day oneDay : Day.values()){
+        if(oneDay.toString().equals(day)) result = oneDay;
+      }
+      return result;
+    }
+}
+    
