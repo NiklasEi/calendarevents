@@ -1,3 +1,7 @@
+### v 1.8.1
+- Fix combined events not being reloaded on command
+- Support placeholders (PlaceholderAPI) in commands, titles and actionbars
+
 ### v 1.8.0
 - NEW FEATURE: Combined events
   - allow events to fire when a specified list of other events was fired
