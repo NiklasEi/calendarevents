@@ -113,6 +113,8 @@ public class EventsManager implements CalendarEventsApi {
         Settings.loadSettingsFromConfig(config);
         timings.clear();
         timings.putAll(apiRegisteredTimings);
+        // ToDo: when combined events are supported by the API we need to preserve them
+        combinedEvents.clear();
         loadEventsFromConfig();
         this.eventListener = new EventListener(plugin, timings.keySet());
         Bukkit.getServer().getPluginManager().registerEvents(eventListener, plugin);
