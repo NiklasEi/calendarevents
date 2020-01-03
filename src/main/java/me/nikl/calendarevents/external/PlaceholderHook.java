@@ -1,13 +1,20 @@
 package me.nikl.calendarevents.external;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.nikl.calendarevents.CalendarEvents;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class PlaceholderHook {
 
     public PlaceholderHook(CalendarEvents instance) {
         new CalendarEventsExpansion(instance).register();
+        Bukkit.getLogger().info("   Hooked into PlaceholderAPI");
+    }
+
+    public String setPlaceholders(Player player, String message) {
+        return PlaceholderAPI.setPlaceholders(player, message);
     }
 
     class CalendarEventsExpansion extends PlaceholderExpansion {

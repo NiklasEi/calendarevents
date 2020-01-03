@@ -27,6 +27,7 @@ public class CalendarEvents extends JavaPlugin {
     private File configurationFile;
     private FileConfiguration configuration;
     private Metrics metrics;
+    private PlaceholderHook placeholderHook;
 
     public static void debug(String message) {
         if (DEBUG) Bukkit.getLogger().info(message);
@@ -36,13 +37,13 @@ public class CalendarEvents extends JavaPlugin {
     public void onEnable() {
         reloadConfiguration();
         Settings.loadSettingsFromConfig(configuration);
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            this.placeholderHook = new PlaceholderHook(this);
+        }
         this.eventsManager = new EventsManager(this);
         this.timer = new Timer(this);
         this.getCommand("calendarevents").setExecutor(new Commands(this));
         setUpMetrics();
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new PlaceholderHook(this);
-        }
     }
 
     private void setUpMetrics() {
@@ -96,5 +97,9 @@ public class CalendarEvents extends JavaPlugin {
     @Override
     public FileConfiguration getConfig() {
         return this.configuration;
+    }
+
+    public PlaceholderHook getPlaceholderHook() {
+        return placeholderHook;
     }
 }

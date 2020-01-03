@@ -33,6 +33,7 @@ public class EventListener implements Listener {
     private Map<String, ActionBar> actionBars;
     private Map<String, Title> titles;
     private Set<String> labels;
+    private boolean parseMessagesForPlaceholders;
 
     public EventListener(CalendarEvents plugin, Set<String> labels) {
         this.plugin = plugin;
@@ -54,6 +55,7 @@ public class EventListener implements Listener {
      * Load configured actions on events
      */
     private void loadListener() {
+        this.parseMessagesForPlaceholders = plugin.getPlaceholderHook() != null;
         this.commands = new HashMap<>();
         this.commandsWithPerm = new HashMap<>();
         this.broadcast = new HashMap<>();
@@ -127,7 +129,7 @@ public class EventListener implements Listener {
                     cmd = setEventPlaceholders(cmd, event);
                     if (cmd.contains("%allOnline%")) {
                         for (Player player : Bukkit.getOnlinePlayers()) {
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replace("%allOnline%", player.getName()).replace("%player%", player.getName()));
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), placeholders(player, cmd).replace("%allOnline%", player.getName()).replace("%player%", player.getName()));
                         }
                     } else {
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
@@ -141,7 +143,7 @@ public class EventListener implements Listener {
                     for (CommandAction commandAction : commandsWithPerm.get(label)) {
                         if (!player.hasPermission(commandAction.perm)) continue;
                         for (String cmd : commandAction.commands) {
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), placeholders(player, cmd)
                                     .replace("%allOnline%", player.getName())
                                     .replace("%player%", player.getName())
                                     .replace("%perm%", commandAction.perm));
@@ -168,13 +170,13 @@ public class EventListener implements Listener {
                 if (actionBar.perm == null || actionBar.perm.equals("")) {
                     // no permission => send to every player
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        nms.sendActionbar(player, bar.replace("%player%", player.getName()));
+                        nms.sendActionbar(player, placeholders(player, bar).replace("%player%", player.getName()));
                     }
                 } else {
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         // check for permission node first
                         if (!player.hasPermission(actionBar.perm)) continue;
-                        nms.sendActionbar(player, bar.replace("%player%", player.getName()));
+                        nms.sendActionbar(player, placeholders(player, bar).replace("%player%", player.getName()));
                     }
                 }
             }
@@ -187,13 +189,13 @@ public class EventListener implements Listener {
                 if (title.perm == null || title.perm.equals("")) {
                     // no permission => send to every player
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        nms.sendTitle(player, titleString.replace("%player%", player.getName()), subTitle.replace("%player%", player.getName()), title.ticksToDisplay);
+                        nms.sendTitle(player, placeholders(player, titleString).replace("%player%", player.getName()), placeholders(player, subTitle).replace("%player%", player.getName()), title.ticksToDisplay);
                     }
                 } else {
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         // check for permission node first
                         if (!player.hasPermission(title.perm)) continue;
-                        nms.sendTitle(player, titleString.replace("%player%", player.getName()), subTitle.replace("%player%", player.getName()), title.ticksToDisplay);
+                        nms.sendTitle(player, placeholders(player, titleString).replace("%player%", player.getName()), placeholders(player, subTitle).replace("%player%", player.getName()), title.ticksToDisplay);
                     }
                 }
             }
@@ -202,6 +204,10 @@ public class EventListener implements Listener {
 
     private String setEventPlaceholders(String message, CalendarEvent event) {
         return message.replace("%time%", event.getTime()).replace("%day%", event.getDay()).replace("%month%", event.getMonth());
+    }
+
+    private String placeholders(Player player, String message) {
+        return this.parseMessagesForPlaceholders ? plugin.getPlaceholderHook().setPlaceholders(player, message) : message;
     }
 
 
