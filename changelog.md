@@ -1,3 +1,6 @@
+### v 1.8.2
+- support minecraft version 1.15
+
 ### v 1.8.1
 - Fix combined events not being reloaded on command
 - Support placeholders (PlaceholderAPI) in commands, titles and actionbars
