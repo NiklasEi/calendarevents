@@ -480,6 +480,15 @@ public class EventsManager implements CalendarEventsApi {
         return (int) ((nextCall - currentTimeMillis) / 1000.);
     }
 
+    @Override
+    public Map<String, Long> getNextCallsOfEvents() {
+        Map<String, Long> nextCalls = new HashMap<>();
+        this.timings.forEach((String label, Timing timing) -> nextCalls.put(label, timing.getNextCall()));
+        // ToDo: support combined events here
+        //this.combinedEvents.forEach((String label, CombinedEvent combinedEvent) -> nextCalls.put(label, combinedEvent.getNextCall()));
+        return nextCalls;
+    }
+
     public int getNumberOfEvents() {
         return timings.keySet().size();
     }

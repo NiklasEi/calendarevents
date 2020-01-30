@@ -1,5 +1,7 @@
 package me.nikl.calendarevents;
 
+import java.util.Map;
+
 /**
  * @author Niklas Eicker
  *
@@ -45,4 +47,11 @@ public interface CalendarEventsApi {
      * @return seconds to next call, or -1 if no call left / event does not exist
      */
     int secondsToNextCall(String label);
+
+    /**
+     * Pass on event labels and their next calls
+     *
+     * @return event labels and next calls
+     */
+    Map<String, Long> getNextCallsOfEvents();
 }
