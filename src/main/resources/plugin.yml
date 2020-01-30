@@ -1,7 +1,7 @@
 name: CalendarEvents
 author: Nikl
 main: me.nikl.calendarevents.CalendarEvents
-version: 1.8.2
+version: 1.8.3
 website: nikl.me
 
 softdepend: [PlaceholderAPI]
@@ -16,3 +16,9 @@ permissions:
   calendarevents.reload:
     description: Gives permission to use the reload command
     default: op
+  calendarevents.help:
+    description: Gives permission to use the help command
+    default: true
+  calendarevents.list:
+    description: Gives permission to use the list command
+    default: true
