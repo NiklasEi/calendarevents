@@ -40,9 +40,9 @@ public class EventsManager implements CalendarEventsApi {
         timings = new HashMap<>();
         combinedEvents = new HashMap<>();
         loadEventsFromConfig();
-        HashSet<String> allLables = new HashSet<String>(timings.keySet());
-        allLables.addAll(combinedEvents.keySet());
-        this.eventListener = new EventListener(plugin, allLables);
+        HashSet<String> allLabels = new HashSet<>(timings.keySet());
+        allLabels.addAll(combinedEvents.keySet());
+        this.eventListener = new EventListener(plugin, allLabels);
         Bukkit.getServer().getPluginManager().registerEvents(eventListener, plugin);
     }
 
@@ -90,11 +90,13 @@ public class EventsManager implements CalendarEventsApi {
             timings.put(key, timing);
             timing.setNextMilli();
         }
-        // check wether all events used in combined events are valid
-        for (CombinedEvent event : new HashMap<String, CombinedEvent>(this.combinedEvents).values()) {
+        // check whether all events used in combined events are valid
+        Iterator<CombinedEvent> iterator = this.combinedEvents.values().iterator();
+        while (iterator.hasNext()) {
+            CombinedEvent event = iterator.next();
             for (String childEvent : event.getChildEvents()) {
                 if(!this.timings.containsKey(childEvent)) {
-                    this.combinedEvents.remove(event.getLable());
+                    iterator.remove();
                     Bukkit.getLogger().log(Level.WARNING, "The combined event '" + event.getLable() + "'");
                     Bukkit.getLogger().log(Level.WARNING, "   contains unknown child event: ''" + childEvent + "'");
                     Bukkit.getLogger().log(Level.WARNING, "...  Skipping the event  ...");
@@ -116,7 +118,9 @@ public class EventsManager implements CalendarEventsApi {
         // ToDo: when combined events are supported by the API we need to preserve them
         combinedEvents.clear();
         loadEventsFromConfig();
-        this.eventListener = new EventListener(plugin, timings.keySet());
+        HashSet<String> allLabels = new HashSet<>(timings.keySet());
+        allLabels.addAll(combinedEvents.keySet());
+        this.eventListener = new EventListener(plugin, allLabels);
         Bukkit.getServer().getPluginManager().registerEvents(eventListener, plugin);
     }
 
