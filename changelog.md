@@ -1,3 +1,13 @@
+# Changelog for CalendarEvents
+Releases can be found on [Spigot](https://www.spigotmc.org/resources/35536/)
+#
+
+### v 1.8.3
+- Support combined events with the reload command [#12](https://github.com/NiklasEi/calendarevents/issues/12)
+- add help and list commands
+  - **/ce help** will display commdand help
+  - **/ce list** will show all scheduled events (combined events are currently not shown)
+
 ### v 1.8.2
 - support minecraft version 1.15
 
