@@ -2,6 +2,14 @@
 Releases can be found on [Spigot](https://www.spigotmc.org/resources/35536/)
 #
 
+### v 2.0.0
+- Specify api version to remove legacy support
+
+#
+
+### v 1.9.0
+- Support %allPlayers% and %allOffline% in commands and run them for OfflinePlayers
+
 ### v 1.8.3
 - Support combined events with the reload command [#12](https://github.com/NiklasEi/calendarevents/issues/12)
 - add help and list commands

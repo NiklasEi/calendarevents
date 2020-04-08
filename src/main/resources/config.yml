@@ -57,7 +57,7 @@ events:
   # COMBINED EVENTS
   #  combined events can be used to create special scheduling like e.g. every first sunday of a month
   #  combined events contain a list of "normal" calendar event labels and are only fired when ALL of the listed events are fired
-  
+
   # lets create some normal events to use in a combined event
   sunday: # every sunday
     timing:
@@ -98,6 +98,8 @@ settings:
 listener:
   workingDays:
     # %allOnline%    --->  this gets called for every online player and will be replaced with the player name
+    # %allOffline%   --->  this gets called for every offline player and will be replaced with the player name
+    # %allPlayers%   --->  this gets called for every player (online and offline) and will be replaced with the player name
     commands:
     # - "tell %allOnline% &4Hey there %allOnline% &1:)"
 

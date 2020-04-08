@@ -4,6 +4,7 @@ import me.nikl.nmsutilities.NmsUtility;
 import me.nikl.nmsutilities.NmsFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -19,7 +20,7 @@ import java.util.logging.Level;
 
 /**
  * @author Niklas Eicker
- *
+ * <p>
  * Plugin intern listener for the event CalendarEvent
  * load stuff to do from the config and do whatever was configured on the events
  */
@@ -129,7 +130,21 @@ public class EventListener implements Listener {
                     cmd = setEventPlaceholders(cmd, event);
                     if (cmd.contains("%allOnline%")) {
                         for (Player player : Bukkit.getOnlinePlayers()) {
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), placeholders(player, cmd).replace("%allOnline%", player.getName()).replace("%player%", player.getName()));
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), placeholders(player, cmd).replaceAll("%allOnline%", player.getName()).replaceAll("%player%", player.getName()));
+                        }
+                    } else if (cmd.contains("%allOffline%")) {
+                        for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+                            if (!player.hasPlayedBefore() || player.isOnline()) {
+                                continue;
+                            }
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceAll("%allOffline%", player.getName()).replaceAll("%player%", player.getName()));
+                        }
+                    } else if (cmd.contains("%allPlayers%")) {
+                        for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+                            if (!player.hasPlayedBefore()) {
+                                continue;
+                            }
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceAll("%allPlayers%", player.getName()).replaceAll("%player%", player.getName()));
                         }
                     } else {
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);

@@ -1,8 +1,9 @@
-name: CalendarEvents
+name: ${project.name}
 author: Nikl
 main: me.nikl.calendarevents.CalendarEvents
-version: 1.8.3
+version: ${project.version}
 website: nikl.me
+api-version: '1.14'
 
 softdepend: [PlaceholderAPI]
 
