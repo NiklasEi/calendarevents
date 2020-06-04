@@ -130,24 +130,24 @@ public class EventListener implements Listener {
                     cmd = setEventPlaceholders(cmd, event);
                     if (cmd.contains("%allOnline%")) {
                         for (Player player : Bukkit.getOnlinePlayers()) {
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), placeholders(player, cmd).replaceAll("%allOnline%", player.getName()).replaceAll("%player%", player.getName()));
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), placeholders(player, cmd.replaceAll("%allOnline%", player.getName()).replaceAll("%player%", player.getName())));
                         }
                     } else if (cmd.contains("%allOffline%")) {
                         for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                             if (!player.hasPlayedBefore() || player.isOnline()) {
                                 continue;
                             }
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceAll("%allOffline%", player.getName()).replaceAll("%player%", player.getName()));
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), placeholders(null, cmd.replaceAll("%allOffline%", player.getName()).replaceAll("%player%", player.getName())));
                         }
                     } else if (cmd.contains("%allPlayers%")) {
                         for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                             if (!player.hasPlayedBefore()) {
                                 continue;
                             }
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceAll("%allPlayers%", player.getName()).replaceAll("%player%", player.getName()));
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), placeholders(null, cmd.replaceAll("%allPlayers%", player.getName()).replaceAll("%player%", player.getName())));
                         }
                     } else {
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), placeholders(null, cmd));
                     }
                 }
             }
@@ -158,10 +158,10 @@ public class EventListener implements Listener {
                     for (CommandAction commandAction : commandsWithPerm.get(label)) {
                         if (!player.hasPermission(commandAction.perm)) continue;
                         for (String cmd : commandAction.commands) {
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), placeholders(player, cmd)
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), placeholders(player, cmd
                                     .replace("%allOnline%", player.getName())
                                     .replace("%player%", player.getName())
-                                    .replace("%perm%", commandAction.perm));
+                                    .replace("%perm%", commandAction.perm)));
                         }
                     }
                 }
@@ -169,13 +169,13 @@ public class EventListener implements Listener {
 
             // check for broadcast
             if (broadcast.get(label) != null) {
-                Bukkit.broadcastMessage(setEventPlaceholders(broadcast.get(label), event));
+                Bukkit.broadcastMessage(setEventPlaceholders(placeholders(null, broadcast.get(label)), event));
             }
 
             // check for broadcast with permission node
             if (broadCastWithPerm.get(label) != null) {
                 BroadcastWithPerm broadcastWithPerm = this.broadCastWithPerm.get(label);
-                Bukkit.broadcast(setEventPlaceholders(broadcastWithPerm.message, event), broadcastWithPerm.perm);
+                Bukkit.broadcast(setEventPlaceholders(placeholders(null, broadcastWithPerm.message), event), broadcastWithPerm.perm);
             }
 
             // check for actionbar

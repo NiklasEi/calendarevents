@@ -7,6 +7,8 @@ Releases can be found on [Spigot](https://www.spigotmc.org/resources/35536/)
 
 #
 
+- Send broadcasts and all commands through PlaceholderAPI
+
 ### v 1.9.0
 - Support %allPlayers% and %allOffline% in commands and run them for OfflinePlayers
 
