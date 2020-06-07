@@ -2,12 +2,14 @@
 Releases can be found on [Spigot](https://www.spigotmc.org/resources/35536/)
 #
 
+### v 2.1.0
+- Send broadcasts and all commands through PlaceholderAPI
+
 ### v 2.0.0
 - Specify api version to remove legacy support
 
 #
 
-- Send broadcasts and all commands through PlaceholderAPI
 
 ### v 1.9.0
 - Support %allPlayers% and %allOffline% in commands and run them for OfflinePlayers
