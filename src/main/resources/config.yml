@@ -4,14 +4,14 @@
 #                                                                              #
 # ---------------------------------------------------------------------------- #
 
+# All times int this configuration file are interpreted in the timezone of your server
+
 # the following events are examples for you to understand how to add custom events with this plugin.
-# They all get registered and called.
-# You can remove or add any event you want, but make sure that the labels (keys) are different.
 # To let the plugin do something on these events, go to the section 'listener'.
 # For more complex action on events, use the API.
 # Please visit www.spigotmc.org/resources/35536/ for more information on the API.
 events:
-  # Event called on the first of every month
+  # The event label needs to be unique and is used as its identifier in the 'listener' section
   newMonth:
     timing:
       # This will get called on every first of the month.
@@ -35,24 +35,26 @@ events:
       occasion: "01.01, 02.01"
       time: "00:00"
 
-  # Event called every day, every two hours
-  exampleEvent1:
-    timing:
-      # 'every day' gets translated to 'monday, tuesday, wednesday, thursday, friday, saturday, sunday'
-      occasion: "every day"
-      time: "01:00,03:00,05:00,07:00,09:00,11:00,13:00,15:00,17:00,19:00,21:00,23:00"
-
-  # Event called every working/school day, every two hours
-  workingDays:
-    timing:
-      occasion: "monday, tuesday, wednesday, thursday, friday"
-      time: "01:00,03:00,05:00,07:00,09:00,11:00,13:00,15:00,17:00,19:00,21:00,23:00"
-
   # Event fired on christmas 2022
   christmas2022:
     timing:
       occasion: "24.12.2022"
       time: "12:00"
+
+  # Event called every day, every two hours
+  everyDayEveryTwoHours:
+    timing:
+      # 'every day' gets translated to 'monday, tuesday, wednesday, thursday, friday, saturday, sunday'
+      occasion: "every day"
+      time: "01:00,03:00,05:00,07:00,09:00,11:00,13:00,15:00,17:00,19:00,21:00,23:00"
+
+  # Event called every working/school day, every hour
+  workingDaysEveryHour:
+    timing:
+      occasion: "monday, tuesday, wednesday, thursday, friday"
+      # use the placeholder 'x' to stand for any possible number
+      time: "xx:00"
+
 
   # COMBINED EVENTS
   #  combined events can be used to create special scheduling like e.g. every first sunday of a month
@@ -88,15 +90,16 @@ settings:
   # Use an IETF language tag (see: https://r12a.github.io/app-subtags/).
   language: "en"
 
-# You can listen to calendar events in other plugins.
-# But you can also use the listener in this plugin for basic actions.
-# For example: send commands, messages, broadcasts, titles
+
+# You can use the listener for basic actions such as
+# sending commands, actionbars, broadcasts and titles
+
 # use & for colors
 # %time% will be replaced with the events time (24h format hh:mm)
 # %day% will be replaced with the name of the day in the locale defined at 'settings.locale'
 # %month% will be replaced with the name of the month in the locale defined at 'settings.locale'
 listener:
-  workingDays:
+  workingDaysEveryHour:
     # %allOnline%    --->  this gets called for every online player and will be replaced with the player name
     # %allOffline%   --->  this gets called for every offline player and will be replaced with the player name
     # %allPlayers%   --->  this gets called for every player (online and offline) and will be replaced with the player name
@@ -139,11 +142,11 @@ listener:
       ticksToDisplay: 20
 
   newMonth:
-    broadcast: "It is now &1%month%"
+    #broadcast: "It is now &1%month%"
 
 # CalendarEvents is on bStats: https://bstats.org/plugin/bukkit/CalendarEvents
 # If you don't want any anonymous data to be send, you can opt it out here.
 bstats:
   # Please consider leaving this enabled.
-  # Having statistics helps me to see in which projects I should invest more time.
+  # Having statistics helps me to see in which projects/features I should invest more time.
   disabled: false
