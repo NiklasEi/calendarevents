@@ -157,7 +157,7 @@ public class Timing {
                     // can't happen, is parsed before on load
                     continue;
                 }
-                relevantMillis.add(date.plusHours(hour).plusMinutes(min).minusHours(Settings.addHoursToServerTime).toInstant().toEpochMilli());
+                relevantMillis.add(date.plusHours(hour).plusMinutes(min).minusHours(Settings.offsetHours).toInstant().toEpochMilli());
             }
         }
     }

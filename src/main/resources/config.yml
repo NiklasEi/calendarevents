@@ -79,13 +79,14 @@ events:
 
 # General Calendar Events settings
 settings:
-  # If your server is in a different timezone then most of your players, you can add hours to the server time here.
+  # If your server is in a different timezone than the timezone you would like your events to be triggered in, you can configure the difference in hours here.
   # Example:
-  #     Server:   UTC +0
+  #     Server:   UTC
   #     Players:  UTC +1
-  #     configure addHoursToServerTime = 1
-  #     The events above will trigger at the configured times for your UTC +1 players!
-  addHoursToServerTime: 0
+  #     configure offsetHours = 1
+  #     The events above will trigger at the configured times for your UTC +1 players
+  #     This setting supports negative values (e.g. -2 for Server UTC+2 and players UTC)
+  offsetHours: 0
   # The locale defines the month and day names in the event (%day%, %month%).
   # Use an IETF language tag (see: https://r12a.github.io/app-subtags/).
   language: "en"

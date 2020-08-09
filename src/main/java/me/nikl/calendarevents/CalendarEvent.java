@@ -25,7 +25,7 @@ public class CalendarEvent extends Event implements Cancellable {
 
     public CalendarEvent(ArrayList labels) {
         this.labels = labels;
-        ZonedDateTime now = ZonedDateTime.now().plusHours(Settings.addHoursToServerTime);
+        ZonedDateTime now = ZonedDateTime.now().plusHours(Settings.offsetHours);
         this.minute = now.getSecond() < 20 ? now.getMinute() : (now = now.plusMinutes(1)).getMinute();
         this.hour = now.getHour();
         this.year = now.getYear();
