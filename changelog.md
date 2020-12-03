@@ -2,6 +2,9 @@
 Releases can be found on [Spigot](https://www.spigotmc.org/resources/35536/)
 #
 
+### v 2.2.0
+- Support up to MC 1.16.4
+
 ### v 2.1.0
 - Send broadcasts and all commands through PlaceholderAPI
 
