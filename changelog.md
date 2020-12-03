@@ -2,6 +2,9 @@
 Releases can be found on [Spigot](https://www.spigotmc.org/resources/35536/)
 #
 
+### v 2.3.0
+- new placeholder `until-min-plus-one` to show correct amount of minutes left till next event call
+
 ### v 2.2.0
 - Support up to MC 1.16.4
 

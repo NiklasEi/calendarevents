@@ -71,6 +71,9 @@ public class PlaceholderHook {
                 case "until-min":
                     if (ids.length < 2 || ids[1].isEmpty()) return null;
                     return String.valueOf((plugin.getApi().secondsToNextCall(ids[1])%3600)/60);
+                case "until-min-plus-one":
+                    if (ids.length < 2 || ids[1].isEmpty()) return null;
+                    return String.valueOf(((plugin.getApi().secondsToNextCall(ids[1])%3600)/60) + 1);
                 case "until-h":
                     if (ids.length < 2 || ids[1].isEmpty()) return null;
                     return String.valueOf((plugin.getApi().secondsToNextCall(ids[1])%(3600*24))/3600);
