@@ -2,6 +2,10 @@
 Releases can be found on [Spigot](https://www.spigotmc.org/resources/35536/)
 #
 
+### v 2.4.0
+- Bump to latest nmsutilities for support of MC 1.19/1.20
+- switch maven repository
+
 ### v 2.3.0
 - new placeholder `until-min-plus-one` to show correct amount of minutes left till next event call
 
